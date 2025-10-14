@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Face Detection & Anti-Spoofing</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🎭 Face Detection & Anti-Spoofing</h1>
+        <p>Nhấn "Verify" để chụp ảnh và kiểm tra tính xác thực</p>
+      </div>
+
+      <div class="camera-section">
+        <div class="camera-container">
+          <video id="video" autoplay muted playsinline></video>
+          <canvas id="canvas" style="display: none"></canvas>
+        </div>
+
+        <div class="controls">
+          <button id="startCamera" class="btn btn-primary">📷 Bắt đầu Camera</button>
+          <button id="verifyBtn" class="btn btn-success" disabled>✅ Verify</button>
+        </div>
+      </div>
+
+      <div class="result-section" id="resultSection" style="display: none">
+        <div class="captured-image">
+          <img id="capturedImg" alt="Captured Image" />
+        </div>
+
+        <div class="loading" id="loading" style="display: none">
+          <div class="spinner"></div>
+          <p>Đang phân tích...</p>
+        </div>
+
+        <div class="results" id="results" style="display: none">
+          <h3>📊 Kết quả phân tích:</h3>
+          <div id="faceResults"></div>
+        </div>
+      </div>
+
+      <div class="status" id="status"></div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
