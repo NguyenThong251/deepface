@@ -3,5 +3,5 @@ db_config ={
     "port": 3306,
     "user": "root",
     "password": "",
-    "database": "face_recognition"
+    "database": "deep_face"
 }
