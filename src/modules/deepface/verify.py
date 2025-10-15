@@ -1,4 +1,5 @@
 from typing import Any, Dict
+import numpy as np
 
 from src.services.detect_face import DetectFaceService
 from src.services.facial_recognition import FacialRecognitionService
@@ -35,8 +36,7 @@ class VerifyController:
             faces2 = image_check(image2, None, self.face_detect_service) 
             face2 = faces2[0]
             x2, y2, w2, h2 = int(face2.x), int(face2.y), int(face2.w), int(face2.h)
-
-
+            
             verify_result = self.facial_recognition_service.verify(
                 img1_path=image1[y1:y1+h1, x1:x1+w1],
                 img2_path=image2[y2:y2+h2, x2:x2+w2]

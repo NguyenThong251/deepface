@@ -3,6 +3,7 @@ from src.modules.deepface.analyze import AnalyzeController
 from src.modules.deepface.verify import VerifyController
 from src.modules.deepface.register import RegisterController
 from src.modules.deepface.process import ProcessController
+from src.routes.middleware import require_auth
 
 def register_routes(app):
     deepface = {
@@ -23,6 +24,7 @@ def register_routes(app):
 
 
     @app.route("/face/api", methods=["POST"])
+    @require_auth # authentication required
     def face_api():
         data = body()
         op   = data.get("_operation")
