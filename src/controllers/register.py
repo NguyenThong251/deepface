@@ -1,6 +1,5 @@
 from typing import Any, Dict
 import numpy as np
-from flask import jsonify
 
 from src.services.sql import SQLService
 from src.services.redis import RedisService
@@ -13,15 +12,15 @@ class RegisterController:
     def register_user(self, data: Dict[str, Any]):
         try:
             employee_id = data.get("employee_id")
-            if not employee_id: return jsonify({"error":{"code":"VALIDATION FAILED"}}), 200
+            if not employee_id: return {'success': False,"error": {'message':"VALIDATION FAILED"}}
 
             image_face = self.redis_service.get_temp_image(employee_id)
+            if image_face is None: return {'success': False,"error": {'message':"FACE NOT FOUND"}}
             
-            if image_face is None: return jsonify({"error":{"code":"FACE NOT FOUND"}}), 200
-            # problem here
-            self.sql_service.create_face_info(employee_id , image_face)
+            res = self.sql_service.create_face_info(employee_id , image_face)
+            if res is None: return {'success': False,"error": {'message':"SAVE SQL FAILED"}}
 
-            return jsonify({"success": "OK"}), 200
+            return {'success': True, 'result': {'message': 'OK'}}
             
         except Exception as e:
-            return {'error': {'code': 'SYSTEM ERROR'}}, 500
+            return {'success': False,"error": {'message': 'SYSTEM ERROR'}}

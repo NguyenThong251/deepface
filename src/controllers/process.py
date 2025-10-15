@@ -5,36 +5,34 @@ from flask import jsonify
 from src.services.detect_face import DetectFaceService
 from src.services.anti_spoof import AntiSpoofService
 from src.services.redis import RedisService
+from src.services.sql import SQLService
 from src.utils.imgbase64 import decode_base64_image
-
+from src.utils.imgcheck import image_check
 
 class ProcessController:
     def __init__(self):
         self.face_detect_service = DetectFaceService()
         self.anti_spoof_service = AntiSpoofService()
         self.redis_service = RedisService()
+        self.sql_service = SQLService()
     
     def process_image(self, data: Dict[str, Any]):
         try:
+
             employee_id = data.get("employee_id")
             image_frame = data.get("image")
-            if not all((employee_id, image_frame)): return jsonify({"error":{"code":"VALIDATION FAILED"}}), 200
 
-            img = decode_base64_image(image_frame)
-            h, w = img.shape[:2]
-            img_is_real, img_score = self.anti_spoof_service.analyze_image(img, (0, 0, w, h))
-            if img_score >= self.anti_spoof_service.threshold and not img_is_real:
-                return jsonify({"error":{"code":"ANTI SPOOFING"}}), 200
+            if not all((employee_id, image_frame)): return {'success': False,"error": {'message':"VALIDATION FAILED"}}
+            if self.sql_service.face_user_exists(employee_id): 
+                return {'success': False,"error": {'message':"FACE USER EXISTS"}}
 
-            faces = self.face_detect_service.detect_faces(img)
-            if not (faces): return jsonify({"error":{"code":"NO FACE DETECTED"}}), 200
+            image = decode_base64_image(image_frame)
+            image_check(image, self.anti_spoof_service, self.face_detect_service)
 
-            face = faces[0]
-            x, y, w, h = int(face.x), int(face.y), int(face.w), int(face.h)
-            self.redis_service.create_temp_image(employee_id, img[y:y+h, x:x+w])
+            res = self.redis_service.create_temp_image(employee_id, image_frame)
+            if not res: return {'success': False,"error": {'message':"SAVE REDIS FAILED"}}
 
-            res = self.redis_service.get_temp_image(employee_id)
-            return jsonify({"success": "OK"}), 200
+            return {'success': True, 'result': {'message': 'OK'}}
             
         except Exception as e:
-            return {'error': {'code': 'SYSTEM ERROR'}}, 500
+            return {'success': False,"error": {'message': 'SYSTEM ERROR'}}

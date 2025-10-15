@@ -12,25 +12,18 @@ class RedisService:
     def __init__(self):
         self.client = redis.Redis(**redis_config)
 
-    def create_temp_image(self, employee_id: str, image_frame: np.ndarray) -> None:
+    def create_temp_image(self, employee_id: str, image_frame) -> bool:
         try:
             redis_key = f"{self.prefix}{employee_id}"
-            bio = io.BytesIO(); 
-            np.savez_compressed(bio, arr=image_frame)
-            self.client.setex(redis_key, self.expiration_time, bio.getvalue())
+            self.client.setex(redis_key, self.expiration_time, image_frame)
             return True
         except Exception as e:
             return False
 
-    def get_temp_image(self, employee_id: str) -> Optional[np.ndarray]:
+    def get_temp_image(self, employee_id: str):
         try:
             redis_key = f"{self.prefix}{employee_id}"
-            payload = self.client.get(redis_key)
-            if payload is None:
-                return None
-            buf = io.BytesIO(payload)
-            data = np.load(buf, allow_pickle=False)
-            return data["arr"]
+            return self.client.get(redis_key)
         except Exception as e:
             return False
 

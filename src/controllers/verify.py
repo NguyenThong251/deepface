@@ -1,11 +1,11 @@
 from typing import Any, Dict
-from flask import jsonify
 
 from src.services.detect_face import DetectFaceService
 from src.services.facial_recognition import FacialRecognitionService
 from src.services.anti_spoof import AntiSpoofService
-from src.utils.imgbase64 import decode_base64_image
 from src.services.sql import SQLService
+from src.utils.imgbase64 import decode_base64_image
+from src.utils.imgcheck import image_check
 
 class VerifyController:
     def __init__(self):
@@ -17,30 +17,32 @@ class VerifyController:
         try:
             employee_id = data.get("employee_id")
             image_frame = data.get("image")
-            if not all((employee_id, image_frame)): return jsonify({"error":{"code":"VALIDATION FAILED"}}), 200
-
-            img = decode_base64_image(image_frame)
-            h, w = img.shape[:2]
-            img_is_real, img_score = self.anti_spoof_service.analyze_image(img, (0, 0, w, h))
-            if img_score >= self.anti_spoof_service.threshold and not img_is_real:
-                return jsonify({"error":{"code":"ANTI SPOOFING"}}), 200
-
-            faces = self.face_detect_service.detect_faces(img)
-            if not (faces): return jsonify({"error":{"code":"NO FACE DETECTED"}}), 200
+            if not all((employee_id, image_frame)): 
+                return {'success': False, "error": {'message':"VALIDATION FAILED"}}
             
-            face = faces[0]
-            x, y, w, h = int(face.x), int(face.y), int(face.w), int(face.h)
+            if not self.sql_service.face_user_exists(employee_id): 
+                return {'success': False,"error": {'message':"FACE USER NOT EXISTS"}}
 
-            imgae_face_info = self.sql_service.get_face_info(employee_id)
-            if not imgae_face_info: return jsonify({"error":{"code":"FACE NOT FOUND"}}), 200
+            image_face_info = self.sql_service.get_face_info(employee_id)
+            if not image_face_info: return {'success': False,"error": {'message':"FACE NOT FOUND"}}
+
+            image1 = decode_base64_image(image_frame)
+            faces1 = image_check(image1, self.anti_spoof_service, self.face_detect_service, ) 
+            face1 = faces1[0]
+            x1, y1, w1, h1 = int(face1.x), int(face1.y), int(face1.w), int(face1.h)
+
+            image2 = decode_base64_image(image_face_info)
+            faces2 = image_check(image2, None, self.face_detect_service) 
+            face2 = faces2[0]
+            x2, y2, w2, h2 = int(face2.x), int(face2.y), int(face2.w), int(face2.h)
 
 
             verify_result = self.facial_recognition_service.verify(
-                img1_path=img[y:y+h, x:x+w],
-                img2_path=imgae_face_info
+                img1_path=image1[y1:y1+h1, x1:x1+w1],
+                img2_path=image2[y2:y2+h2, x2:x2+w2]
             ) 
             
-            return jsonify({"success": {'result': verify_result}}), 200
+            return {'success': True,"result":{"verify": verify_result}}
             
         except Exception as e:
-            return {'error': {'code': 'SYSTEM ERROR'}}, 500
+            return {'success': False,"error": {'message': 'SYSTEM ERROR'}}

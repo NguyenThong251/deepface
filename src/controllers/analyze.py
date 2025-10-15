@@ -15,17 +15,17 @@ class AnalyzeController:
     def analyze_image(self, data: Dict[str, Any]):
         try:
             img_path = data.get("image_path")
-            if not img_path: return jsonify({"error":{"code":"VALIDATION FAILED"}}), 200
+            if not img_path: return {'success': False,"code":"VALIDATION FAILED"}
 
             img = decode_base64_image(img_path)
             h, w = img.shape[:2]
             img_is_real, img_score = self.anti_spoof_service.analyze_image(img, (0, 0, w, h))
             if img_score >= self.anti_spoof_service.threshold and not img_is_real:
-                return jsonify({"error":{"code":"ANTI SPOOFING"}}), 200
+                return {'success': False,"code":"ANTI SPOOFING"}
 
             faces = self.face_detect_service.detect_faces(img)
             if not faces:
-                return jsonify({"error":{"code":"NO FACE DETECTED"}}), 200
+                return {'success': False,"code":"NO FACE DETECTED"}
 
             results = []
             for face in faces:

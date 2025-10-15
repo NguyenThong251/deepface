@@ -88,13 +88,14 @@ class FaceDetectionApp {
             this.showStatus('Đang gửi ảnh để phân tích...', 'info');
 
             // Gửi request đến API
-            const response = await fetch('http://localhost:5000/analyze', {
+            const response = await fetch('http://localhost:5000/verify', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    image: this.capturedImageData
+                    image: this.capturedImageData,
+                    employee_id: '2'
                 })
             });
 
@@ -131,54 +132,15 @@ class FaceDetectionApp {
             this.showStatus(`Lỗi từ API: ${data.error}`, 'error');
             return;
         }
-
-        if (!data.faces || data.faces.length === 0) {
-            this.showStatus('Không phát hiện khuôn mặt nào trong ảnh!', 'error');
-            return;
-        }
-
-        // Hiển thị kết quả cho từng khuôn mặt
-        data.faces.forEach((face, index) => {
-            const faceDiv = document.createElement('div');
-            faceDiv.className = `face-result ${face.is_real ? 'real' : 'spoof'}`;
-
-            const isRealText = face.is_real ? '✅ THẬT' : '❌ GIẢ MẠO';
-            const confidence = Math.round(face.det_conf * 100);
-            const spoofScore = Math.round(face.spoof_score * 100);
-
-            faceDiv.innerHTML = `
-                <h4>Khuôn mặt ${index + 1}</h4>
-                <div class="result-item">
-                    <span class="result-label">Trạng thái:</span>
-                    <span class="result-value" style="color: ${face.is_real ? '#4CAF50' : '#f44336'}; font-weight: bold;">
-                        ${isRealText}
-                    </span>
-                </div>
-                <div class="result-item">
-                    <span class="result-label">Độ tin cậy phát hiện:</span>
-                    <span class="result-value">${confidence}%</span>
-                </div>
-                <div class="result-item">
-                    <span class="result-label">Điểm số chống giả mạo:</span>
-                    <span class="result-value">${spoofScore}%</span>
-                </div>
+        const faceDiv = document.createElement('div');
+        faceDiv.innerHTML = `
                 <div class="result-item">
                     <span class="result-label">Vị trí:</span>
-                    <span class="result-value">x:${face.box.x}, y:${face.box.y}, w:${face.box.w}, h:${face.box.h}</span>
+                    <span class="result-value">x:${data.result.verify}</span>
                 </div>
             `;
 
-            this.faceResults.appendChild(faceDiv);
-        });
-
-        const realFaces = data.faces.filter(face => face.is_real).length;
-        const totalFaces = data.faces.length;
-
-        if (realFaces === totalFaces) {
-            this.showStatus(`✅ Phân tích thành công! Tất cả ${totalFaces} khuôn mặt đều là thật.`, 'success');
-        } else {
-            this.showStatus(`⚠️ Phát hiện ${totalFaces - realFaces}/${totalFaces} khuôn mặt giả mạo!`, 'error');
-        }
+        this.faceResults.appendChild(faceDiv);
     }
 
 
