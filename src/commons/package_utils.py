@@ -5,7 +5,7 @@ import hashlib
 import tensorflow as tf
 
 # package dependencies
-from commons.logger import Logger
+from src.commons.logger import Logger
 
 logger = Logger()
 

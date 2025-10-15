@@ -1,35 +1,35 @@
 from flask import request
-from src.controllers.analyze import AnalyzeController
-from src.controllers.verify import VerifyController
-from src.controllers.register import RegisterController
-from src.controllers.process import ProcessController
+from src.modules.deepface.analyze import AnalyzeController
+from src.modules.deepface.verify import VerifyController
+from src.modules.deepface.register import RegisterController
+from src.modules.deepface.process import ProcessController
 
 def register_routes(app):
+    deepface = {
+        "analyze": AnalyzeController().analyze_image,
+        "verify":  VerifyController().verify_user,
+        "register": RegisterController().register_user,
+        "process": ProcessController().process_image,
+    }
+    ekyc = {
+        # "verify": EKYCVerifyController().verify_user,
+        # "register": EKYCRegisterController().register_user,
+    }
 
-    analyze_controller = AnalyzeController()
-    verify_controller = VerifyController()
-    register_controller=RegisterController()
-    process_controller=ProcessController()
+    ops = {"deepface": deepface, "ekyc": ekyc}
 
     def body():
         return request.get_json(force=True, silent=True) or {}
 
-    @app.route("/analyze", methods=["POST"])
-    def analyze():
-        return analyze_controller.analyze_image(body())
 
-    @app.route("/process", methods=["POST"])
-    def process():
-        return process_controller.process_image(body())
-
-    @app.route("/register", methods=["POST"])
-    def register():
-        return register_controller.register_user(body())
-
-    @app.route("/verify", methods=["POST"])
-    def verify():
-        return verify_controller.verify_user(body())
-
-    @app.route("/find", methods=["POST"])
-    def find():
-        return {"message": "Find endpoint - to be implemented"}, 501
+    @app.route("/face/api", methods=["POST"])
+    def face_api():
+        data = body()
+        op   = data.get("_operation")
+        mode = data.get("mode")
+        if not op or not mode or mode not in ops[op]:
+            return {'success': False,"error": {'message':"VALIDATION FAILED"}}
+        try:
+            return ops[op][mode](data)
+        except Exception as e:
+            return {'success': False,"error": {'message': 'SYSTEM ERROR'}}

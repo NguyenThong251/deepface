@@ -2,9 +2,9 @@
 import tensorflow as tf
 
 # project dependencies
-from commons import package_utils, weight_utils
-from models.FacialRecognition import FacialRecognition
-from commons.logger import Logger
+from src.commons import package_utils, weight_utils
+from src.models.FacialRecognition import FacialRecognition
+from src.commons.logger import Logger
 
 logger = Logger()
 

@@ -11,13 +11,13 @@ class RegisterController:
     
     def register_user(self, data: Dict[str, Any]):
         try:
-            employee_id = data.get("employee_id")
-            if not employee_id: return {'success': False,"error": {'message':"VALIDATION FAILED"}}
+            user_id = data.get("user_id")
+            if not user_id: return {'success': False,"error": {'message':"VALIDATION FAILED"}}
 
-            image_face = self.redis_service.get_temp_image(employee_id)
+            image_face = self.redis_service.get_temp_image(user_id)
             if image_face is None: return {'success': False,"error": {'message':"FACE NOT FOUND"}}
             
-            res = self.sql_service.create_face_info(employee_id , image_face)
+            res = self.sql_service.create_face_info(user_id , image_face)
             if res is None: return {'success': False,"error": {'message':"SAVE SQL FAILED"}}
 
             return {'success': True, 'result': {'message': 'OK'}}

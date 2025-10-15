@@ -12,17 +12,17 @@ class RedisService:
     def __init__(self):
         self.client = redis.Redis(**redis_config)
 
-    def create_temp_image(self, employee_id: str, image_frame) -> bool:
+    def create_temp_image(self, user_id: str, image_frame) -> bool:
         try:
-            redis_key = f"{self.prefix}{employee_id}"
+            redis_key = f"{self.prefix}{user_id}"
             self.client.setex(redis_key, self.expiration_time, image_frame)
             return True
         except Exception as e:
             return False
 
-    def get_temp_image(self, employee_id: str):
+    def get_temp_image(self, user_id: str):
         try:
-            redis_key = f"{self.prefix}{employee_id}"
+            redis_key = f"{self.prefix}{user_id}"
             return self.client.get(redis_key)
         except Exception as e:
             return False

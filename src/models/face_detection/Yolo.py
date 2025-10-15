@@ -7,9 +7,9 @@ from enum import Enum
 import numpy as np
 
 # project dependencies
-from models.Detector import Detector, FacialAreaRegion
-from commons.logger import Logger
-from commons import weight_utils
+from src.models.Detector import Detector, FacialAreaRegion
+from src.commons.logger import Logger
+from src.commons import weight_utils
 
 logger = Logger()
 

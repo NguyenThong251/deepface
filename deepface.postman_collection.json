@@ -1,0 +1,106 @@
+{
+	"info": {
+		"_postman_id": "965270ad-3c98-4066-9a1a-65db2ca6e1b5",
+		"name": "deepface",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "47209401"
+	},
+	"item": [
+		{
+			"name": "process",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"_operation\":\"deepface\", // deepface, ekyc,...\r\n    \"mode\":\"process\", //   controller(verify,register,...) in module(deepaface,ekyc,...)\r\n    \"user_id\": \"\",  \r\n    \"image\": \"\"   //base64 ( shape:full device, 80KB < size < 100KB\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/face/api",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"face",
+						"api"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"_operation\":\"deepface\", // deepface, ekyc,...\r\n    \"mode\":\"register\", //   controller(verify,register,...) in module(deepaface,ekyc,...)\r\n    \"user_id\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/face/api",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"face",
+						"api"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "verify",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"_operation\":\"deepface\", // deepface, ekyc,...\r\n    \"mode\":\"verify\", //   controller(verify,register,...) in module(deepaface,ekyc,...)\r\n    \"user_id\": \"\",  \r\n    \"image\": \"\"   //base64 ( shape:full device, 80KB < size < 100KB\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/face/api",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"face",
+						"api"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

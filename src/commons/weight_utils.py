@@ -8,8 +8,8 @@ import bz2
 import gdown
 
 # project dependencies
-from commons import folder_utils, package_utils
-from commons.logger import Logger
+from src.commons import folder_utils, package_utils
+from src.commons.logger import Logger
 
 
 tf_version = package_utils.get_tf_major_version()

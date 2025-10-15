@@ -6,8 +6,8 @@ import cv2
 import numpy as np
 
 # project dependencies
-from commons import weight_utils
-from commons.logger import Logger
+from src.commons import weight_utils
+from src.commons.logger import Logger
 
 logger = Logger()
 
@@ -47,7 +47,7 @@ class Fasnet:
         )
 
         # guarantees Fasnet imported and torch installed
-        from models.spoofing import FasNetBackbone
+        from src.models.spoofing import FasNetBackbone
 
         # Fasnet will use 2 distinct models to predict, then it will find the sum of predictions
         # to make a final prediction

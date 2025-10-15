@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
 from typing import Union
-from models.facial_recognition.GhostFaceNet import GhostFaceNetClient
+from src.models.facial_recognition.GhostFaceNet import GhostFaceNetClient
 from src.config.threshold import thresholds
 
 

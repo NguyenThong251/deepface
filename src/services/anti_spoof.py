@@ -1,4 +1,4 @@
-from models.spoofing.FasNet import Fasnet
+from src.models.spoofing.FasNet import Fasnet
 
 
 class AntiSpoofService:

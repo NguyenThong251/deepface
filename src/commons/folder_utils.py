@@ -1,5 +1,5 @@
 import os
-from commons.logger import Logger
+from src.commons.logger import Logger
 
 logger = Logger()
 

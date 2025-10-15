@@ -1,7 +1,7 @@
 from abc import ABC
 from typing import Any, Union, List, Tuple
 import numpy as np
-from commons import package_utils
+from src.commons import package_utils
 
 tf_version = package_utils.get_tf_major_version()
 if tf_version == 2:

@@ -1,4 +1,4 @@
-from models.face_detection.Yolo import YoloDetectorClientV12n
+from src.models.face_detection.Yolo import YoloDetectorClientV12n
 
 class DetectFaceService:
     def __init__(self):

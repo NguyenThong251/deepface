@@ -15,15 +15,15 @@ class VerifyController:
         self.sql_service = SQLService()
     def verify_user(self, data: Dict[str, Any]):
         try:
-            employee_id = data.get("employee_id")
+            user_id = data.get("user_id")
             image_frame = data.get("image")
-            if not all((employee_id, image_frame)): 
+            if not all((user_id, image_frame)): 
                 return {'success': False, "error": {'message':"VALIDATION FAILED"}}
             
-            if not self.sql_service.face_user_exists(employee_id): 
+            if not self.sql_service.face_user_exists(user_id): 
                 return {'success': False,"error": {'message':"FACE USER NOT EXISTS"}}
 
-            image_face_info = self.sql_service.get_face_info(employee_id)
+            image_face_info = self.sql_service.get_face_info(user_id)
             if not image_face_info: return {'success': False,"error": {'message':"FACE NOT FOUND"}}
 
             image1 = decode_base64_image(image_frame)

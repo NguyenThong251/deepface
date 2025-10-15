@@ -19,17 +19,17 @@ class ProcessController:
     def process_image(self, data: Dict[str, Any]):
         try:
 
-            employee_id = data.get("employee_id")
+            user_id = data.get("user_id")
             image_frame = data.get("image")
 
-            if not all((employee_id, image_frame)): return {'success': False,"error": {'message':"VALIDATION FAILED"}}
-            if self.sql_service.face_user_exists(employee_id): 
+            if not all((user_id, image_frame)): return {'success': False,"error": {'message':"VALIDATION FAILED"}}
+            if self.sql_service.face_user_exists(user_id): 
                 return {'success': False,"error": {'message':"FACE USER EXISTS"}}
 
             image = decode_base64_image(image_frame)
             image_check(image, self.anti_spoof_service, self.face_detect_service)
 
-            res = self.redis_service.create_temp_image(employee_id, image_frame)
+            res = self.redis_service.create_temp_image(user_id, image_frame)
             if not res: return {'success': False,"error": {'message':"SAVE REDIS FAILED"}}
 
             return {'success': True, 'result': {'message': 'OK'}}
