@@ -37,6 +37,11 @@ def download_weights_if_necessary(
     Returns
         target_file (str): exact path for the target file
     """
+    try:
+        folder_utils.initialize_folder()
+    except Exception as e:
+        logger.warning(f"initialize_folder failed: {e}")
+    
     home = folder_utils.get_deepface_home()
 
     target_file = os.path.normpath(os.path.join(home, ".deepface/weights", file_name))
@@ -106,35 +111,35 @@ def download_all_models_in_one_shot() -> None:
     """
 
     # import model weights from module here to avoid circular import issue
-    from models.facial_recognition.VGGFace import WEIGHTS_URL as VGGFACE_WEIGHTS
-    from models.facial_recognition.Facenet import FACENET128_WEIGHTS, FACENET512_WEIGHTS
-    from models.facial_recognition.OpenFace import WEIGHTS_URL as OPENFACE_WEIGHTS
-    from models.facial_recognition.FbDeepFace import WEIGHTS_URL as FBDEEPFACE_WEIGHTS
-    from models.facial_recognition.ArcFace import WEIGHTS_URL as ARCFACE_WEIGHTS
-    from models.facial_recognition.DeepID import WEIGHTS_URL as DEEPID_WEIGHTS
-    from models.facial_recognition.SFace import WEIGHTS_URL as SFACE_WEIGHTS
-    from models.facial_recognition.GhostFaceNet import WEIGHTS_URL as GHOSTFACENET_WEIGHTS
-    from models.facial_recognition.Dlib import WEIGHT_URL as DLIB_FR_WEIGHTS
-    from models.demography.Age import WEIGHTS_URL as AGE_WEIGHTS
-    from models.demography.Gender import WEIGHTS_URL as GENDER_WEIGHTS
-    from models.demography.Race import WEIGHTS_URL as RACE_WEIGHTS
-    from models.demography.Emotion import WEIGHTS_URL as EMOTION_WEIGHTS
-    from models.spoofing.FasNet import (
+    from src.models.facial_recognition.VGGFace import WEIGHTS_URL as VGGFACE_WEIGHTS
+    from src.models.facial_recognition.Facenet import FACENET128_WEIGHTS, FACENET512_WEIGHTS
+    from src.models.facial_recognition.OpenFace import WEIGHTS_URL as OPENFACE_WEIGHTS
+    from src.models.facial_recognition.FbDeepFace import WEIGHTS_URL as FBDEEPFACE_WEIGHTS
+    from src.models.facial_recognition.ArcFace import WEIGHTS_URL as ARCFACE_WEIGHTS
+    from src.models.facial_recognition.DeepID import WEIGHTS_URL as DEEPID_WEIGHTS
+    from src.models.facial_recognition.SFace import WEIGHTS_URL as SFACE_WEIGHTS
+    from src.models.facial_recognition.GhostFaceNet import WEIGHTS_URL as GHOSTFACENET_WEIGHTS
+    from src.models.facial_recognition.Dlib import WEIGHT_URL as DLIB_FR_WEIGHTS
+    from src.models.demography.Age import WEIGHTS_URL as AGE_WEIGHTS
+    from src.models.demography.Gender import WEIGHTS_URL as GENDER_WEIGHTS
+    from src.models.demography.Race import WEIGHTS_URL as RACE_WEIGHTS
+    from src.models.demography.Emotion import WEIGHTS_URL as EMOTION_WEIGHTS
+    from src.models.spoofing.FasNet import (
         FIRST_WEIGHTS_URL as FASNET_1ST_WEIGHTS,
         SECOND_WEIGHTS_URL as FASNET_2ND_WEIGHTS,
     )
-    from models.face_detection.Ssd import (
+    from src.models.face_detection.Ssd import (
         MODEL_URL as SSD_MODEL,
         WEIGHTS_URL as SSD_WEIGHTS,
     )
-    from models.face_detection.Yolo import (
+    from src.models.face_detection.Yolo import (
         WEIGHT_URLS as YOLO_WEIGHTS,
         WEIGHT_NAMES as YOLO_WEIGHT_NAMES,
         YoloModel
     )
-    from models.face_detection.YuNet import WEIGHTS_URL as YUNET_WEIGHTS
-    from models.face_detection.Dlib import WEIGHTS_URL as DLIB_FD_WEIGHTS
-    from models.face_detection.CenterFace import WEIGHTS_URL as CENTERFACE_WEIGHTS
+    from src.models.face_detection.YuNet import WEIGHTS_URL as YUNET_WEIGHTS
+    from src.models.face_detection.Dlib import WEIGHTS_URL as DLIB_FD_WEIGHTS
+    from src.models.face_detection.CenterFace import WEIGHTS_URL as CENTERFACE_WEIGHTS
 
     WEIGHTS = [
         # facial recognition
