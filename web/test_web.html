@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DeepFace API Tester</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+      }
+
+      .header h1 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+      }
+
+      .header p {
+        font-size: 1.1em;
+        opacity: 0.9;
+      }
+
+      .main-content {
+        padding: 30px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+      }
+
+      .camera-section {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+      }
+
+      .camera-container {
+        position: relative;
+        width: 100%;
+        max-width: 500px;
+        margin: 0 auto 20px;
+      }
+
+      #video {
+        width: 100%;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      #canvas {
+        display: none;
+      }
+
+      .controls {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+      }
+
+      .btn-success {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        color: white;
+      }
+
+      .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(17, 153, 142, 0.4);
+      }
+
+      .btn-warning {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+      }
+
+      .btn-warning:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(240, 147, 251, 0.4);
+      }
+
+      .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none !important;
+      }
+
+      .api-section {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+      }
+
+      .api-section h3 {
+        margin-bottom: 20px;
+        color: #333;
+        text-align: center;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 600;
+        color: #555;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: border-color 0.3s ease;
+      }
+
+      .form-group input:focus {
+        outline: none;
+        border-color: #667eea;
+      }
+
+      .result-section {
+        grid-column: 1 / -1;
+        margin-top: 20px;
+      }
+
+      .result-container {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        min-height: 200px;
+      }
+
+      .result-container h3 {
+        margin-bottom: 15px;
+        color: #333;
+      }
+
+      .result-content {
+        background: white;
+        border-radius: 8px;
+        padding: 15px;
+        border-left: 4px solid #667eea;
+        white-space: pre-wrap;
+        font-family: "Courier New", monospace;
+        font-size: 14px;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+
+      .status {
+        padding: 10px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        font-weight: 600;
+      }
+
+      .status.success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+
+      .status.error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+
+      .status.info {
+        background: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+      }
+
+      @media (max-width: 768px) {
+        .main-content {
+          grid-template-columns: 1fr;
+        }
+
+        .header h1 {
+          font-size: 2em;
+        }
+
+        .controls {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .btn {
+          width: 200px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🎥 DeepFace API Tester</h1>
+        <p>Test DeepFace APIs với camera real-time</p>
+      </div>
+
+      <div class="main-content">
+        <div class="camera-section">
+          <div class="camera-container">
+            <video id="video" autoplay muted></video>
+            <canvas id="canvas"></canvas>
+          </div>
+
+          <div class="controls">
+            <button id="startCamera" class="btn btn-primary">📹 Bật Camera</button>
+            <button id="stopCamera" class="btn btn-warning" disabled>⏹️ Tắt Camera</button>
+          </div>
+        </div>
+
+        <div class="api-section">
+          <h3>⚙️ API Settings</h3>
+
+          <div class="form-group">
+            <label for="serverUrl">Server URL:</label>
+            <input
+              type="text"
+              id="serverUrl"
+              value="http://127.0.0.1:5000/face/api"
+              placeholder="http://127.0.0.1:5000/face/api"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="userId">User ID:</label>
+            <input type="text" id="userId" value="test_user_001" placeholder="test_user_001" />
+          </div>
+
+          <div class="controls">
+            <button id="processBtn" class="btn btn-primary" disabled>📸 Process & Capture</button>
+            <button id="verifyBtn" class="btn btn-success" disabled>📸 Verify & Capture</button>
+            <button id="registerBtn" class="btn btn-warning" disabled>📝 Register (No Image)</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-section">
+        <div class="result-container">
+          <h3>📊 Kết Quả API</h3>
+          <div id="status"></div>
+          <div id="result" class="result-content">Chờ kết quả...</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      class DeepFaceTester {
+        constructor() {
+          this.video = document.getElementById("video");
+          this.canvas = document.getElementById("canvas");
+          this.ctx = this.canvas.getContext("2d");
+          this.stream = null;
+          this.capturedImage = null;
+
+          this.initializeElements();
+          this.bindEvents();
+        }
+
+        initializeElements() {
+          this.elements = {
+            startCamera: document.getElementById("startCamera"),
+            stopCamera: document.getElementById("stopCamera"),
+            processBtn: document.getElementById("processBtn"),
+            verifyBtn: document.getElementById("verifyBtn"),
+            registerBtn: document.getElementById("registerBtn"),
+            serverUrl: document.getElementById("serverUrl"),
+            userId: document.getElementById("userId"),
+            status: document.getElementById("status"),
+            result: document.getElementById("result"),
+          };
+        }
+
+        bindEvents() {
+          this.elements.startCamera.addEventListener("click", () => this.startCamera());
+          this.elements.stopCamera.addEventListener("click", () => this.stopCamera());
+          this.elements.processBtn.addEventListener("click", () => this.callAPI("process"));
+          this.elements.verifyBtn.addEventListener("click", () => this.callAPI("verify"));
+          this.elements.registerBtn.addEventListener("click", () => this.callAPI("register"));
+        }
+
+        async startCamera() {
+          try {
+            this.stream = await navigator.mediaDevices.getUserMedia({
+              video: {
+                width: { ideal: 640 },
+                height: { ideal: 480 },
+              },
+            });
+
+            this.video.srcObject = this.stream;
+
+            this.elements.startCamera.disabled = true;
+            this.elements.stopCamera.disabled = false;
+            this.elements.processBtn.disabled = false;
+            this.elements.verifyBtn.disabled = false;
+            this.elements.registerBtn.disabled = false;
+
+            this.showStatus("Camera đã được bật thành công! Bạn có thể test API.", "success");
+          } catch (error) {
+            this.showStatus("Lỗi khi bật camera: " + error.message, "error");
+          }
+        }
+
+        stopCamera() {
+          if (this.stream) {
+            this.stream.getTracks().forEach((track) => track.stop());
+            this.stream = null;
+            this.video.srcObject = null;
+          }
+
+          this.elements.startCamera.disabled = false;
+          this.elements.stopCamera.disabled = true;
+          this.elements.processBtn.disabled = true;
+          this.elements.verifyBtn.disabled = true;
+          this.elements.registerBtn.disabled = true;
+
+          this.showStatus("Camera đã được tắt", "info");
+        }
+
+        captureImageFromVideo() {
+          try {
+            this.canvas.width = this.video.videoWidth;
+            this.canvas.height = this.video.videoHeight;
+
+            this.ctx.drawImage(this.video, 0, 0);
+
+            // Convert to base64 and remove data URL prefix
+            const dataURL = this.canvas.toDataURL("image/jpeg", 0.8);
+            return dataURL.split(",")[1]; // Remove "data:image/jpeg;base64," prefix
+          } catch (error) {
+            console.error("Error capturing image:", error);
+            return null;
+          }
+        }
+
+        async callAPI(mode) {
+          // Capture image first if not register mode
+          let capturedImage = null;
+          if (mode !== "register") {
+            if (!this.stream) {
+              this.showStatus("Vui lòng bật camera trước!", "error");
+              return;
+            }
+
+            this.showStatus(`📸 Đang chụp ảnh cho ${mode.toUpperCase()}...`, "info");
+            capturedImage = this.captureImageFromVideo();
+
+            if (!capturedImage) {
+              this.showStatus("Lỗi khi chụp ảnh!", "error");
+              return;
+            }
+          }
+
+          const serverUrl = this.elements.serverUrl.value.trim();
+          const userId = this.elements.userId.value.trim();
+
+          if (!serverUrl) {
+            this.showStatus("Vui lòng nhập Server URL!", "error");
+            return;
+          }
+
+          if (!userId) {
+            this.showStatus("Vui lòng nhập User ID!", "error");
+            return;
+          }
+
+          // Disable all buttons during API call
+          this.disableButtons(true);
+
+          try {
+            const payload = {
+              _operation: "deepface",
+              mode: mode,
+              user_id: userId,
+            };
+
+            if (mode !== "register" && capturedImage) {
+              payload.image = capturedImage; // Use captured image directly
+            }
+
+            this.showStatus(`🔄 Đang gọi API ${mode.toUpperCase()}...`, "info");
+
+            const response = await fetch(serverUrl, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(payload),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+              this.showStatus(`✅ API ${mode.toUpperCase()} thành công!`, "success");
+              this.elements.result.textContent = JSON.stringify(result, null, 2);
+            } else {
+              this.showStatus(`❌ API ${mode.toUpperCase()} thất bại!`, "error");
+              this.elements.result.textContent = JSON.stringify(result, null, 2);
+            }
+          } catch (error) {
+            this.showStatus(`❌ Lỗi kết nối: ${error.message}`, "error");
+            this.elements.result.textContent = `Lỗi: ${error.message}`;
+          } finally {
+            this.disableButtons(false);
+          }
+        }
+
+        disableButtons(disable) {
+          this.elements.processBtn.disabled = disable;
+          this.elements.verifyBtn.disabled = disable;
+          this.elements.registerBtn.disabled = disable;
+        }
+
+        showStatus(message, type) {
+          this.elements.status.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+      }
+
+      // Initialize the app when page loads
+      document.addEventListener("DOMContentLoaded", () => {
+        new DeepFaceTester();
+      });
+    </script>
+  </body>
+</html>

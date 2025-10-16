@@ -6,7 +6,7 @@ from src.config.redis import redis_config
 
 class RedisService:
 
-    expiration_time = 300
+    expiration_time = 600
     prefix = "ERP:TempFaceInfo:"
 
     def __init__(self):
@@ -24,6 +24,14 @@ class RedisService:
         try:
             redis_key = f"{self.prefix}{user_id}"
             return self.client.get(redis_key)
+        except Exception as e:
+            return False
+
+    def delete_temp_image(self, user_id: str):
+        try:
+            redis_key = f"{self.prefix}{user_id}"
+            self.client.delete(redis_key)
+            return True
         except Exception as e:
             return False
 

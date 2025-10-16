@@ -14,11 +14,16 @@ class RegisterController:
             user_id = data.get("user_id")
             if not user_id: return {'success': False,"error": {'message':"VALIDATION FAILED"}}
 
+            if self.sql_service.face_user_exists(user_id): 
+                return {'success': False,"error": {'message':"FACE USER EXISTS"}}
+
             image_face = self.redis_service.get_temp_image(user_id)
             if image_face is None: return {'success': False,"error": {'message':"FACE NOT FOUND"}}
+
+            res_sql = self.sql_service.create_face_info(user_id , image_face)
+            if res_sql is False: return {'success': False,"error": {'message':"SAVE SQL FAILED"}}
             
-            res = self.sql_service.create_face_info(user_id , image_face)
-            if res is None: return {'success': False,"error": {'message':"SAVE SQL FAILED"}}
+            self.redis_service.delete_temp_image(user_id)
 
             return {'success': True, 'result': {'message': 'OK'}}
             

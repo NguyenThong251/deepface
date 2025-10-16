@@ -14,7 +14,7 @@ class SQLService:
         except Exception as e:
             return False
             
-    def create_face_info(self, user_id, image_face: str) -> None:
+    def create_face_info(self, user_id, image_face: str) -> bool:
         try:
             cursor = self.db.cursor()
             cursor.execute("INSERT INTO face (user_id, image_face) VALUES (%s, %s)", (user_id, image_face))
