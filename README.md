@@ -21,7 +21,7 @@ DeepFace API là một hệ thống nhận dạng khuôn mặt thông minh sử 
 
 | Component   | Version | Mô tả                      |
 | ----------- | ------- | -------------------------- |
-| **Python**  | 3.8+    | Runtime environment        |
+| **Python**  | 3.10 +  | Runtime environment        |
 | **MySQL**   | 5.7+    | Database chính             |
 | **Redis**   | 6.0+    | Cache và session storage   |
 | **RAM**     | 4GB+    | Khuyến nghị cho production |
@@ -431,15 +431,15 @@ Xác thực khuôn mặt người dùng bằng cách so sánh với ảnh đã �
 
 | Code                   | HTTP Status | Mô tả                               | Giải pháp                      |
 | ---------------------- | ----------- | ----------------------------------- | ------------------------------ |
-| `VALIDATION_FAILED`    | 400         | Thiếu thông tin bắt buộc            | Kiểm tra request body          |
-| `FACE_USER_EXISTS`     | 409         | User đã tồn tại trong hệ thống      | Sử dụng user_id khác           |
-| `FACE_USER_NOT_EXISTS` | 404         | User chưa đăng ký trong hệ thống    | Đăng ký user trước             |
-| `FACE_NOT_FOUND`       | 404         | Không tìm thấy ảnh khuôn mặt        | Kiểm tra cache/database        |
-| `NO_FACE_DETECTED`     | 400         | Không phát hiện khuôn mặt trong ảnh | Sử dụng ảnh chất lượng tốt hơn |
-| `ANTI_SPOOFING`        | 400         | Phát hiện ảnh giả/spoofing          | Sử dụng ảnh thật               |
-| `SAVE_REDIS_FAILED`    | 500         | Lưu Redis thất bại                  | Kiểm tra Redis connection      |
-| `SAVE_SQL_FAILED`      | 500         | Lưu database thất bại               | Kiểm tra MySQL connection      |
-| `SYSTEM_ERROR`         | 500         | Lỗi hệ thống                        | Liên hệ support                |
+| `VALIDATION_FAILED`    | 200         | Thiếu thông tin bắt buộc            | Kiểm tra request body          |
+| `FACE_USER_EXISTS`     | 200         | User đã tồn tại trong hệ thống      | Sử dụng user_id khác           |
+| `FACE_USER_NOT_EXISTS` | 200         | User chưa đăng ký trong hệ thống    | Đăng ký user trước             |
+| `FACE_NOT_FOUND`       | 200         | Không tìm thấy ảnh khuôn mặt        | Kiểm tra cache/database        |
+| `NO_FACE_DETECTED`     | 200         | Không phát hiện khuôn mặt trong ảnh | Sử dụng ảnh chất lượng tốt hơn |
+| `ANTI_SPOOFING`        | 200         | Phát hiện ảnh giả/spoofing          | Sử dụng ảnh thật               |
+| `SAVE_REDIS_FAILED`    | 200         | Lưu Redis thất bại                  | Kiểm tra Redis connection      |
+| `SAVE_SQL_FAILED`      | 200         | Lưu database thất bại               | Kiểm tra MySQL connection      |
+| `SYSTEM_ERROR`         | 200         | Lỗi hệ thống                        | Liên hệ support                |
 
 ---
 
