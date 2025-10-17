@@ -5,7 +5,9 @@ from src.services.sql import SQLService
 from src.services.redis import RedisService
 from src.services.qdrant import QdrantService
 from src.services.detect_face import DetectFaceService
+from src.services.facial_recognition import FacialRecognitionService
 from src.utils.imgbase64 import decode_base64_image
+
 
 class RegisterController:
     def __init__(self):
@@ -13,7 +15,8 @@ class RegisterController:
         self.redis_service = RedisService()
         self.qdrant_service = QdrantService()
         self.face_detect_service = DetectFaceService()
-    
+        self.facial_recognition_service = FacialRecognitionService()
+
     def register_user(self, data: Dict[str, Any]):
         try:
             user_id = data.get("user_id")
@@ -35,8 +38,9 @@ class RegisterController:
             face = faces[0]
             x, y, w, h = int(face.x), int(face.y), int(face.w), int(face.h)
             face_crop = imagergb_face[y:y+h, x:x+w]
+            face_embedding = self.facial_recognition_service.compute_embedding(face_crop)
 
-            face_vector = self.qdrant_service.insert_vector(collection_name="faces",point_id=user_id,vector=face_crop,payload={"user_id": user_id})
+            face_vector = self.qdrant_service.insert_vector(collection_name="faces",point_id=int(user_id),vector=face_embedding,payload={"user_id": int(user_id)})
             # vector database
 
             if image_face is None: return {'success': False,"error": {'message':"FACE NOT FOUND"}}

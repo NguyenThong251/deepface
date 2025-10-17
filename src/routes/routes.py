@@ -2,6 +2,7 @@ from flask import request
 from src.modules.deepface.verify import VerifyController
 from src.modules.deepface.register import RegisterController
 from src.modules.deepface.process import ProcessController
+from src.modules.deepface.search import SearchController
 from src.routes.middleware import require_auth
 
 def register_routes(app):
@@ -9,6 +10,7 @@ def register_routes(app):
         "verify":  VerifyController().verify_user,
         "register": RegisterController().register_user,
         "process": ProcessController().process_image,
+        "search": SearchController().search_user,
     }
     ekyc = {
         # "verify": EKYCVerifyController().verify_user,

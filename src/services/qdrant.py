@@ -14,11 +14,13 @@ class QdrantService:
             vectors_config=VectorParams(size=512, distance=Distance.COSINE),
         )
     
-    def search_collection(self, collection_name: str, query_vector: np.ndarray, limit: int = 10):
+    def search_vector(self, collection_name: str, query_vector: np.ndarray, limit: int = 1, threshold: float = 0.5):
         return self.client.search(
             collection_name=collection_name,
             query_vector=query_vector,
             limit=limit,
+            with_payload=True,
+            score_threshold=threshold,
         )
 
     def insert_vector(self, collection_name: str, point_id: str, vector: np.ndarray, payload: dict):

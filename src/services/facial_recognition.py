@@ -94,3 +94,15 @@ class FacialRecognitionService:
         verified = distance <= threshold
         
         return bool(verified)
+
+    def compute_embedding(self, img: Union[str, np.ndarray]):
+        if isinstance(img, np.ndarray):
+            img = img
+        else:
+            img = cv2.imread(img)
+        
+        img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        img_resized = cv2.resize(img_rgb, self.model.input_shape)
+        img_normalized = img_resized.astype(np.float32) / 255.0
+        embedding = self.model.forward(img_normalized)
+        return embedding
