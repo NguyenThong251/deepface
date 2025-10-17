@@ -16,13 +16,13 @@ class VerifyController:
             user_id = data.get("user_id")
             image_frame = data.get("image")
             if not all((user_id, image_frame)): 
-                return {'success': False, "error": {'message':"VALIDATION FAILED"}}
+                return {'success': False, "error": {'message':"VALIDATION_FAILED"}}
             
             if not self.sql_service.face_user_exists(user_id): 
-                return {'success': False,"error": {'message':"FACE USER NOT EXISTS"}}
+                return {'success': False,"error": {'message':"FACE_USER_NOT_EXISTS"}}
 
             image_face_info = self.sql_service.get_face_info(user_id)
-            if not image_face_info: return {'success': False,"error": {'message':"FACE NOT FOUND"}}
+            if not image_face_info: return {'success': False,"error": {'message':"FACE_NOT_FOUND"}}
 
             image1 = decode_base64_image(image_frame)
             faces1 = self.face_detect_service.detect_face(image1, anti_spoof_service=True)
@@ -43,4 +43,4 @@ class VerifyController:
             return {'success': True,"result":{"verify": verify_result}}
             
         except Exception as e:
-            return {'success': False,"error": {'message': 'SYSTEM ERROR'}}
+            return {'success': False,"error": {'message': 'SYSTEM_ERROR'}}

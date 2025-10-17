@@ -19,9 +19,9 @@ class ProcessController:
             user_id = data.get("user_id")
             image_frame = data.get("image")
 
-            if not all((user_id, image_frame)): return {'success': False,"error": {'message':"VALIDATION FAILED"}}
+            if not all((user_id, image_frame)): return {'success': False,"error": {'message':"VALIDATION_FAILED"}}
             if self.sql_service.face_user_exists(user_id): 
-                return {'success': False,"error": {'message':"FACE USER EXISTS"}}
+                return {'success': False,"error": {'message':"FACE_USER_EXISTS"}}
 
             image = decode_base64_image(image_frame)
 
@@ -30,9 +30,9 @@ class ProcessController:
                 return res_detect
            
             res_redis = self.redis_service.create_temp_image(user_id, image_frame)
-            if not res_redis: return {'success': False,"error": {'message':"SAVE REDIS FAILED"}}
+            if not res_redis: return {'success': False,"error": {'message':"SAVE_REDIS_FAILED"}}
 
             return {'success': True, 'result': {'message': 'OK'}}
             
         except Exception as e:
-            return {'success': False,"error": {'message': 'SYSTEM ERROR'}}
+            return {'success': False,"error": {'message': 'SYSTEM_ERROR'}}
