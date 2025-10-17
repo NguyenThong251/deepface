@@ -188,7 +188,7 @@ graph TD
 #### 2️⃣ **User Check Phase**
 
 - ✅ Kiểm tra user chưa đăng ký trong database
-- ❌ **Lỗi**: `FACE_USER_EXISTS` nếu user đã tồn tại
+- ❌ **Lỗi**: `FACE_ALREADY_REGISTERED` nếu user đã tồn tại
 
 #### 3️⃣ **Image Processing Phase**
 
@@ -234,7 +234,7 @@ graph TD
 {
     "success": false,
     "error": {
-        "message": "FACE_USER_EXISTS"
+        "message": "FACE_ALREADY_REGISTERED"
     }
 }
 
@@ -277,7 +277,7 @@ graph TD
 #### 2️⃣ **User Existence Check**
 
 - ✅ Kiểm tra user chưa đăng ký trong database
-- ❌ **Lỗi**: `FACE_USER_EXISTS` nếu user đã tồn tại
+- ❌ **Lỗi**: `FACE_ALREADY_REGISTERED` nếu user đã tồn tại
 
 #### 3️⃣ **Cache Retrieval Phase**
 
@@ -312,7 +312,7 @@ graph TD
 {
     "success": false,
     "error": {
-        "message": "FACE_USER_EXISTS"
+        "message": "FACE_ALREADY_REGISTERED"
     }
 }
 
@@ -427,19 +427,26 @@ Xác thực khuôn mặt người dùng bằng cách so sánh với ảnh đã �
 
 ---
 
-## 🚨 Error Codes Reference
+## 🚨 Error Codes Reference (đúng theo code)
 
-| Code                   | HTTP Status | Mô tả                               | Giải pháp                      |
-| ---------------------- | ----------- | ----------------------------------- | ------------------------------ |
-| `VALIDATION_FAILED`    | 200         | Thiếu thông tin bắt buộc            | Kiểm tra request body          |
-| `FACE_USER_EXISTS`     | 200         | User đã tồn tại trong hệ thống      | Sử dụng user_id khác           |
-| `FACE_USER_NOT_EXISTS` | 200         | User chưa đăng ký trong hệ thống    | Đăng ký user trước             |
-| `FACE_NOT_FOUND`       | 200         | Không tìm thấy ảnh khuôn mặt        | Kiểm tra cache/database        |
-| `NO_FACE_DETECTED`     | 200         | Không phát hiện khuôn mặt trong ảnh | Sử dụng ảnh chất lượng tốt hơn |
-| `ANTI_SPOOFING`        | 200         | Phát hiện ảnh giả/spoofing          | Sử dụng ảnh thật               |
-| `SAVE_REDIS_FAILED`    | 200         | Lưu Redis thất bại                  | Kiểm tra Redis connection      |
-| `SAVE_SQL_FAILED`      | 200         | Lưu database thất bại               | Kiểm tra MySQL connection      |
-| `SYSTEM_ERROR`         | 200         | Lỗi hệ thống                        | Liên hệ support                |
+| Code                      | Áp dụng cho     | Mô tả                                   |
+| ------------------------- | --------------- | --------------------------------------- |
+| `VALIDATION_FAILED`       | Process         | Thiếu `user_id` hoặc `image`            |
+| `SAVE_FAILED`             | Process         | Lưu ảnh tạm vào Redis hoặc sql thất bại |
+| `SYSTEM ERROR`            | Process/Verify  | Lỗi hệ thống chung                      |
+| `VALIDATION_FAILED`       | Register/Verify | Thiếu tham số bắt buộc                  |
+| `FACE_ALREADY_REGISTERED` | Register        | User đã đăng ký                         |
+| `FACE_NOT_FOUND`          | Register/Verify | Không tìm thấy ảnh khuôn mặt            |
+| `NO_FACE_DETECTED`        | Process/Verify  | Không phát hiện khuôn mặt               |
+| `ANTI_SPOOFING`           | Process/Verify  | Phát hiện ảnh giả/spoofing              |
+
+Lưu ý: Hiện tại API trả JSON với các message như trên, không gắn kèm HTTP status code riêng cho từng lỗi (mặc định 200 nếu không override). Nếu cần chuẩn hóa HTTP status, hãy bổ sung mapping ở layer route.
+
+### Ghi chú theo endpoint
+
+- Process: `VALIDATION FAILED`, `FACE USER EXISTS`, `NO_FACE_DETECTED`, `ANTI_SPOOFING`, `SAVE REDIS FAILED`, `SYSTEM ERROR`
+- Register: `VALIDATION_FAILED`, `FACE_ALREADY_REGISTERED`, `FACE_NOT_FOUND`, `SAVE_FAILED` (exception sẽ trả về chuỗi lỗi thực tế)
+- Verify: `VALIDATION_FAILED`, `FACE_USER_NOT_EXISTS`, `FACE_NOT_FOUND`, `NO_FACE_DETECTED`, `ANTI_SPOOFING`, `SYSTEM_ERROR`
 
 ---
 

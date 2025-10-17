@@ -18,9 +18,6 @@ class VerifyController:
             if not all((user_id, image_frame)): 
                 return {'success': False, "error": {'message':"VALIDATION_FAILED"}}
             
-            if not self.sql_service.face_user_exists(user_id): 
-                return {'success': False,"error": {'message':"FACE_USER_NOT_EXISTS"}}
-
             image_face_info = self.sql_service.get_face_info(user_id)
             if not image_face_info: return {'success': False,"error": {'message':"FACE_NOT_FOUND"}}
 
@@ -43,4 +40,4 @@ class VerifyController:
             return {'success': True,"result":{"verify": verify_result}}
             
         except Exception as e:
-            return {'success': False,"error": {'message': 'SYSTEM_ERROR'}}
+            return {'success': False,"error": {'message': str(e)}}
