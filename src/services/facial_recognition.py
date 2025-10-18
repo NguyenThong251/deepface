@@ -1,13 +1,15 @@
 import numpy as np
 import cv2
 from typing import Union
-from src.models.facial_recognition.GhostFaceNet import GhostFaceNetClient
+# from src.models.facial_recognition.GhostFaceNet import GhostFaceNetClient
+from src.models.facial_recognition.ArcFace import ArcFaceClient
+# from src.models.facial_recognition.VGGFace import VggFaceClient
 from src.config.threshold import thresholds
 
 
 class FacialRecognitionService:
     def __init__(self):
-        self.model = GhostFaceNetClient()
+        self.model = ArcFaceClient()
         self.model_name = self.model.model_name
         self.distance_metric = "cosine"
     
@@ -91,6 +93,7 @@ class FacialRecognitionService:
         threshold = self.find_threshold(self.model_name, self.distance_metric)
         
         # Verify: distance <= threshold means same person
+        print( "distance: ", distance, "threshold: ", threshold)
         verified = distance <= threshold
         
         return bool(verified)
