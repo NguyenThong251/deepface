@@ -127,11 +127,11 @@ Tất cả requests đều sử dụng JSON format với cấu trúc chuẩn:
 
 ```json
 {
-    "success": true,
-    "result": {
-        "message": "OK",
-        "verify": true/false  // Chỉ có trong verify endpoint
-    }
+  "success": true,
+  "result": {
+    "code": "OK",
+    "message": true
+  }
 }
 ```
 
@@ -141,8 +141,8 @@ Tất cả requests đều sử dụng JSON format với cấu trúc chuẩn:
 {
   "success": false,
   "error": {
-    "message": "ERROR_CODE",
-    "details": "Optional error details"
+    "code": "ERROR_CODE",
+    "message": "Error description"
   }
 }
 ```
@@ -216,7 +216,8 @@ graph TD
 {
   "success": true,
   "result": {
-    "message": "OK"
+    "code": "OK",
+    "message": true
   }
 }
 ```
@@ -227,21 +228,24 @@ graph TD
 {
     "success": false,
     "error": {
-        "message": "VALIDATION_FAILED"
+        "code": "VALIDATION_FAILED",
+        "message": "User required"
     }
 }
 
 {
     "success": false,
     "error": {
-        "message": "FACE_ALREADY_REGISTERED"
+        "code": "ALREADY_REGISTERED",
+        "message": "User has registered face"
     }
 }
 
 {
     "success": false,
     "error": {
-        "message": "ANTI_SPOOFING"
+        "code": "SAVE_FAILED",
+        "message": "Failed to save Redis"
     }
 }
 ```
@@ -301,7 +305,8 @@ graph TD
 {
   "success": true,
   "result": {
-    "message": "OK"
+    "code": "OK",
+    "message": true
   }
 }
 ```
@@ -312,21 +317,24 @@ graph TD
 {
     "success": false,
     "error": {
-        "message": "FACE_ALREADY_REGISTERED"
+        "code": "ALREADY_REGISTERED",
+        "message": "User has registered face"
     }
 }
 
 {
     "success": false,
     "error": {
-        "message": "FACE_NOT_FOUND"
+        "code": "VALIDATION_FAILED",
+        "message": "Image not found"
     }
 }
 
 {
     "success": false,
     "error": {
-        "message": "SAVE_SQL_FAILED"
+        "code": "SAVE_FAILED",
+        "message": "Failed to save to database"
     }
 }
 ```
@@ -395,7 +403,8 @@ Xác thực khuôn mặt người dùng bằng cách so sánh với ảnh đã �
 {
   "success": true,
   "result": {
-    "verify": true
+    "code": "OK",
+    "message": true
   }
 }
 ```
@@ -406,47 +415,142 @@ Xác thực khuôn mặt người dùng bằng cách so sánh với ảnh đã �
 {
     "success": false,
     "error": {
-        "message": "FACE_USER_NOT_EXISTS"
+        "code": "NOT_REGISTERED",
+        "message": "Face not registered"
     }
 }
 
 {
     "success": false,
     "error": {
-        "message": "ANTI_SPOOFING"
+        "code": "VALIDATION_FAILED",
+        "message": "User required"
     }
 }
 
 {
     "success": false,
     "error": {
-        "message": "NO_FACE_DETECTED"
+        "message": "Exception details"
     }
 }
 ```
 
 ---
 
-## 🚨 Error Codes Reference (đúng theo code)
+## 🔍 4. Search Endpoint
 
-| Code                      | Áp dụng cho     | Mô tả                                   |
-| ------------------------- | --------------- | --------------------------------------- |
-| `VALIDATION_FAILED`       | Process         | Thiếu `user_id` hoặc `image`            |
-| `SAVE_FAILED`             | Process         | Lưu ảnh tạm vào Redis hoặc sql thất bại |
-| `SYSTEM ERROR`            | Process/Verify  | Lỗi hệ thống chung                      |
-| `VALIDATION_FAILED`       | Register/Verify | Thiếu tham số bắt buộc                  |
-| `FACE_ALREADY_REGISTERED` | Register        | User đã đăng ký                         |
-| `FACE_NOT_FOUND`          | Register/Verify | Không tìm thấy ảnh khuôn mặt            |
-| `NO_FACE_DETECTED`        | Process/Verify  | Không phát hiện khuôn mặt               |
-| `ANTI_SPOOFING`           | Process/Verify  | Phát hiện ảnh giả/spoofing              |
+### 📋 Mô tả
 
-Lưu ý: Hiện tại API trả JSON với các message như trên, không gắn kèm HTTP status code riêng cho từng lỗi (mặc định 200 nếu không override). Nếu cần chuẩn hóa HTTP status, hãy bổ sung mapping ở layer route.
+Tìm kiếm người dùng bằng ảnh khuôn mặt sử dụng vector database (Qdrant).
 
-### Ghi chú theo endpoint
+**Endpoint**: `POST /face/api`  
+**Mode**: `search`
 
-- Process: `VALIDATION FAILED`, `FACE USER EXISTS`, `NO_FACE_DETECTED`, `ANTI_SPOOFING`, `SAVE REDIS FAILED`, `SYSTEM ERROR`
-- Register: `VALIDATION_FAILED`, `FACE_ALREADY_REGISTERED`, `FACE_NOT_FOUND`, `SAVE_FAILED` (exception sẽ trả về chuỗi lỗi thực tế)
-- Verify: `VALIDATION_FAILED`, `FACE_USER_NOT_EXISTS`, `FACE_NOT_FOUND`, `NO_FACE_DETECTED`, `ANTI_SPOOFING`, `SYSTEM_ERROR`
+### 📤 Request
+
+```json
+{
+  "_operation": "deepface",
+  "mode": "search",
+  "image": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ..."
+}
+```
+
+### 🔄 Workflow chi tiết
+
+#### 1️⃣ **Validation Phase**
+
+- ✅ Kiểm tra `image` có tồn tại
+- ❌ **Lỗi**: `VALIDATION_FAILED` nếu thiếu ảnh
+
+#### 2️⃣ **Face Detection Phase**
+
+- ✅ Phát hiện khuôn mặt trong ảnh
+- ❌ **Lỗi**: `NO_FACE_DETECTED` nếu không tìm thấy khuôn mặt
+
+#### 3️⃣ **Vector Search Phase**
+
+- ✅ Trích xuất embedding từ khuôn mặt
+- ✅ Tìm kiếm trong Qdrant vector database
+- ❌ **Lỗi**: `NO_FACE_FOUND` nếu không tìm thấy trong database
+
+### 📥 Response Examples
+
+#### ✅ Success Response
+
+```json
+{
+  "success": true,
+  "result": "OK John Doe"
+}
+```
+
+#### ❌ Error Responses
+
+```json
+{
+    "success": false,
+    "error": {
+        "message": "VALIDATION_FAILED"
+    }
+}
+
+{
+    "success": false,
+    "error": {
+        "message": "NO_FACE_FOUND"
+    }
+}
+```
+
+---
+
+## 🚨 Error Codes Reference (đúng theo code thực tế)
+
+| Code                 | Áp dụng cho             | Mô tả                                   |
+| -------------------- | ----------------------- | --------------------------------------- |
+| `VALIDATION_FAILED`  | Process/Register/Verify | Thiếu tham số bắt buộc                  |
+| `ALREADY_REGISTERED` | Process/Register        | User đã đăng ký                         |
+| `NOT_REGISTERED`     | Verify                  | User chưa đăng ký                       |
+| `SAVE_FAILED`        | Process/Register        | Lưu ảnh tạm vào Redis hoặc SQL thất bại |
+| `NO_FACE_FOUND`      | Search                  | Không tìm thấy khuôn mặt trong database |
+| `SYSTEM ERROR`       | Tất cả                  | Lỗi hệ thống chung                      |
+
+### Ghi chú theo endpoint (theo code thực tế)
+
+- **Process**: `VALIDATION_FAILED`, `ALREADY_REGISTERED`, `SAVE_FAILED`, `SYSTEM ERROR`
+- **Register**: `VALIDATION_FAILED`, `ALREADY_REGISTERED`, `SAVE_FAILED`, `SYSTEM ERROR`
+- **Verify**: `VALIDATION_FAILED`, `NOT_REGISTERED`, `SYSTEM ERROR`
+- **Search**: `VALIDATION_FAILED`, `NO_FACE_FOUND`, `SYSTEM ERROR`
+
+### Response Format thực tế
+
+#### ✅ Success Response
+
+```json
+{
+  "success": true,
+  "result": {
+    "code": "OK",
+    "message": true
+  }
+}
+```
+
+#### ❌ Error Response
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "ERROR_CODE",
+    "message": "Error description"
+  }
+}
+```
+
+**Lưu ý**: Tất cả responses đều trả về HTTP status 200, lỗi được xử lý trong JSON response.
 
 ---
 
@@ -505,7 +609,8 @@ curl -X POST http://localhost:5000/face/api \
 {
   "success": true,
   "result": {
-    "message": "OK"
+    "code": "OK",
+    "message": true
   }
 }
 ```
@@ -528,7 +633,8 @@ curl -X POST http://localhost:5000/face/api \
 {
   "success": true,
   "result": {
-    "message": "OK"
+    "code": "OK",
+    "message": true
   }
 }
 ```
@@ -552,7 +658,8 @@ curl -X POST http://localhost:5000/face/api \
 {
   "success": true,
   "result": {
-    "verify": true
+    "code": "OK",
+    "message": true
   }
 }
 ```
@@ -608,7 +715,7 @@ result2 = api.register_user("user123")
 
 # Verification
 result3 = api.verify_user("user123", "new_face.jpg")
-print(f"Verification result: {result3['result']['verify']}")
+print(f"Verification result: {result3['result']['message']}")
 ```
 
 ---

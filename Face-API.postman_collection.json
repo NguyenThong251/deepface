@@ -1,0 +1,148 @@
+{
+	"info": {
+		"_postman_id": "965270ad-3c98-4066-9a1a-65db2ca6e1b5",
+		"name": "Face-API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "47209401"
+	},
+	"item": [
+		{
+			"name": "deepface",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"_operation\":\"deepface\", // deepface, ekyc,...\r\n    \"mode\":\"\", //   controller(process,verify,register,search) in module(deepaface,ekyc,...)\r\n    \"user_id\": \"\",    // id user\r\n    \"image\": \"\"   //base64 ( shape:full device, 80KB < size < 100KB\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/face/api",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"face",
+						"api"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "process",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"_operation\":\"deepface\", // deepface, ekyc,...\r\n    \"mode\":\"process\", //   controller(process,verify,register,search) in module(deepaface,ekyc,...)\r\n    \"user_id\": \"\",    // id user\r\n    \"image\": \"\"   //base64 ( shape:full device, 80KB < size < 100KB\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5005/face/api",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5005",
+							"path": [
+								"face",
+								"api"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "verify",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"_operation\":\"deepface\", // deepface, ekyc,...\r\n    \"mode\":\"verify\", //   controller(process,verify,register,search) in module(deepaface,ekyc,...)\r\n    \"user_id\": \"\",    // id user\r\n    \"image\": \"\"   //base64 ( shape:full device, 80KB < size < 100KB\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5005/face/api",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5005",
+							"path": [
+								"face",
+								"api"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "register",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"_operation\":\"deepface\", // deepface, ekyc,...\r\n    \"mode\":\"register\", //   controller(process,verify,register,search) in module(deepaface,ekyc,...)\r\n    \"user_id\": \"\"    // id user\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5005/face/api",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5005",
+							"path": [
+								"face",
+								"api"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		}
+	]
+}

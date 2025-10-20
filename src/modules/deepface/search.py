@@ -6,7 +6,6 @@ from src.services.qdrant import QdrantService
 from src.services.detect_face import DetectFaceService
 from src.utils.imgbase64 import decode_base64_image
 
-
 class SearchController:
     def __init__(self):
         self.facial_recognition_service = FacialRecognitionService()

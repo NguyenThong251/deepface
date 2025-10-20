@@ -109,3 +109,4 @@ class FacialRecognitionService:
         img_normalized = img_resized.astype(np.float32) / 255.0
         embedding = self.model.forward(img_normalized)
         return embedding
+
