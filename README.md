@@ -95,10 +95,8 @@ python app.py
 #### Production Mode
 
 ```bash
-gunicorn --bind 0.0.0.0:5000 --workers 4 app:app
+gunicorn --bind 0.0.0.0:5005 --workers 4 app:app
 ```
-
-**Server URL**: `http://localhost:5000`
 
 ## 🔌 API Endpoints
 
@@ -182,76 +180,6 @@ graph TD
     D -->|Yes| E[Next Phase]
 ```
 
-- ✅ Kiểm tra `user_id` và `image` có tồn tại
-- ❌ **Lỗi**: `VALIDATION_FAILED` nếu thiếu thông tin
-
-#### 2️⃣ **User Check Phase**
-
-- ✅ Kiểm tra user chưa đăng ký trong database
-- ❌ **Lỗi**: `FACE_ALREADY_REGISTERED` nếu user đã tồn tại
-
-#### 3️⃣ **Image Processing Phase**
-
-- ✅ Decode base64 thành numpy array
-- ✅ Validate image format và size
-- ❌ **Lỗi**: `SYSTEM_ERROR` nếu decode thất bại
-
-#### 4️⃣ **AI Analysis Phase**
-
-- ✅ **Face Detection**: Sử dụng YOLO v12n
-- ✅ **Anti-Spoofing**: Sử dụng FasNet
-- ❌ **Lỗi**: `NO_FACE_DETECTED` nếu không tìm thấy khuôn mặt
-- ❌ **Lỗi**: `ANTI_SPOOFING` nếu phát hiện ảnh giả
-
-#### 5️⃣ **Cache Storage Phase**
-
-- ✅ Lưu ảnh base64 vào Redis (TTL: 600 giây)
-- ❌ **Lỗi**: `SAVE_REDIS_FAILED` nếu lưu thất bại
-
-### 📥 Response Examples
-
-#### ✅ Success Response
-
-```json
-{
-  "success": true,
-  "result": {
-    "code": "OK",
-    "message": true
-  }
-}
-```
-
-#### ❌ Error Responses
-
-```json
-{
-    "success": false,
-    "error": {
-        "code": "VALIDATION_FAILED",
-        "message": "User required"
-    }
-}
-
-{
-    "success": false,
-    "error": {
-        "code": "ALREADY_REGISTERED",
-        "message": "User has registered face"
-    }
-}
-
-{
-    "success": false,
-    "error": {
-        "code": "SAVE_FAILED",
-        "message": "Failed to save Redis"
-    }
-}
-```
-
----
-
 ## 📝 2. Register Endpoint
 
 ### 📋 Mô tả
@@ -270,76 +198,6 @@ graph TD
   "user_id": "user123"
 }
 ```
-
-### 🔄 Workflow chi tiết
-
-#### 1️⃣ **Validation Phase**
-
-- ✅ Kiểm tra `user_id` có tồn tại
-- ❌ **Lỗi**: `VALIDATION_FAILED` nếu thiếu thông tin
-
-#### 2️⃣ **User Existence Check**
-
-- ✅ Kiểm tra user chưa đăng ký trong database
-- ❌ **Lỗi**: `FACE_ALREADY_REGISTERED` nếu user đã tồn tại
-
-#### 3️⃣ **Cache Retrieval Phase**
-
-- ✅ Lấy ảnh base64 từ Redis cache
-- ❌ **Lỗi**: `FACE_NOT_FOUND` nếu không tìm thấy ảnh trong Redis
-
-#### 4️⃣ **Database Storage Phase**
-
-- ✅ Lưu thông tin khuôn mặt vào MySQL
-- ❌ **Lỗi**: `SAVE_SQL_FAILED` nếu lưu database thất bại
-
-#### 5️⃣ **Cleanup Phase**
-
-- ✅ Xóa ảnh tạm thời khỏi Redis cache
-
-### 📥 Response Examples
-
-#### ✅ Success Response
-
-```json
-{
-  "success": true,
-  "result": {
-    "code": "OK",
-    "message": true
-  }
-}
-```
-
-#### ❌ Error Responses
-
-```json
-{
-    "success": false,
-    "error": {
-        "code": "ALREADY_REGISTERED",
-        "message": "User has registered face"
-    }
-}
-
-{
-    "success": false,
-    "error": {
-        "code": "VALIDATION_FAILED",
-        "message": "Image not found"
-    }
-}
-
-{
-    "success": false,
-    "error": {
-        "code": "SAVE_FAILED",
-        "message": "Failed to save to database"
-    }
-}
-```
-
----
 
 ## ✅ 3. Verify Endpoint
 
@@ -361,88 +219,11 @@ Xác thực khuôn mặt người dùng bằng cách so sánh với ảnh đã �
 }
 ```
 
-### 🔄 Workflow chi tiết
-
-#### 1️⃣ **Validation Phase**
-
-- ✅ Kiểm tra `user_id` và `image` có tồn tại
-- ❌ **Lỗi**: `VALIDATION_FAILED` nếu thiếu thông tin
-
-#### 2️⃣ **User Verification Phase**
-
-- ✅ Kiểm tra user đã đăng ký trong database
-- ❌ **Lỗi**: `FACE_USER_NOT_EXISTS` nếu user chưa đăng ký
-
-#### 3️⃣ **Database Retrieval Phase**
-
-- ✅ Lấy ảnh base64 từ database
-- ❌ **Lỗi**: `FACE_NOT_FOUND` nếu không tìm thấy ảnh trong database
-
-#### 4️⃣ **Face Detection Phase (Ảnh mới)**
-
-- ✅ Phát hiện khuôn mặt trong ảnh mới
-- ✅ Kiểm tra anti-spoofing
-- ❌ **Lỗi**: `NO_FACE_DETECTED` nếu không tìm thấy khuôn mặt
-- ❌ **Lỗi**: `ANTI_SPOOFING` nếu phát hiện ảnh giả
-
-#### 5️⃣ **Face Detection Phase (Ảnh đã đăng ký)**
-
-- ✅ Phát hiện khuôn mặt trong ảnh đã đăng ký
-
-#### 6️⃣ **Facial Recognition Phase**
-
-- ✅ Trích xuất embedding từ cả hai khuôn mặt
-- ✅ So sánh embedding sử dụng cosine distance
-- ✅ Áp dụng threshold (GhostFaceNet: 0.65)
-
-### 📥 Response Examples
-
-#### ✅ Success Response
-
-```json
-{
-  "success": true,
-  "result": {
-    "code": "OK",
-    "message": true
-  }
-}
-```
-
-#### ❌ Error Responses
-
-```json
-{
-    "success": false,
-    "error": {
-        "code": "NOT_REGISTERED",
-        "message": "Face not registered"
-    }
-}
-
-{
-    "success": false,
-    "error": {
-        "code": "VALIDATION_FAILED",
-        "message": "User required"
-    }
-}
-
-{
-    "success": false,
-    "error": {
-        "message": "Exception details"
-    }
-}
-```
-
----
-
 ## 🔍 4. Search Endpoint
 
 ### 📋 Mô tả
 
-Tìm kiếm người dùng bằng ảnh khuôn mặt sử dụng vector database (Qdrant).
+Tìm kiếm người dùng bằng ảnh khuôn mặt sử dụng vector database (Qdrant). comming soon
 
 **Endpoint**: `POST /face/api`  
 **Mode**: `search`
@@ -457,55 +238,6 @@ Tìm kiếm người dùng bằng ảnh khuôn mặt sử dụng vector database
 }
 ```
 
-### 🔄 Workflow chi tiết
-
-#### 1️⃣ **Validation Phase**
-
-- ✅ Kiểm tra `image` có tồn tại
-- ❌ **Lỗi**: `VALIDATION_FAILED` nếu thiếu ảnh
-
-#### 2️⃣ **Face Detection Phase**
-
-- ✅ Phát hiện khuôn mặt trong ảnh
-- ❌ **Lỗi**: `NO_FACE_DETECTED` nếu không tìm thấy khuôn mặt
-
-#### 3️⃣ **Vector Search Phase**
-
-- ✅ Trích xuất embedding từ khuôn mặt
-- ✅ Tìm kiếm trong Qdrant vector database
-- ❌ **Lỗi**: `NO_FACE_FOUND` nếu không tìm thấy trong database
-
-### 📥 Response Examples
-
-#### ✅ Success Response
-
-```json
-{
-  "success": true,
-  "result": "OK John Doe"
-}
-```
-
-#### ❌ Error Responses
-
-```json
-{
-    "success": false,
-    "error": {
-        "message": "VALIDATION_FAILED"
-    }
-}
-
-{
-    "success": false,
-    "error": {
-        "message": "NO_FACE_FOUND"
-    }
-}
-```
-
----
-
 ## 🚨 Error Codes Reference (đúng theo code thực tế)
 
 | Code                 | Áp dụng cho             | Mô tả                                   |
@@ -516,43 +248,6 @@ Tìm kiếm người dùng bằng ảnh khuôn mặt sử dụng vector database
 | `SAVE_FAILED`        | Process/Register        | Lưu ảnh tạm vào Redis hoặc SQL thất bại |
 | `NO_FACE_FOUND`      | Search                  | Không tìm thấy khuôn mặt trong database |
 | `SYSTEM ERROR`       | Tất cả                  | Lỗi hệ thống chung                      |
-
-### Ghi chú theo endpoint (theo code thực tế)
-
-- **Process**: `VALIDATION_FAILED`, `ALREADY_REGISTERED`, `SAVE_FAILED`, `SYSTEM ERROR`
-- **Register**: `VALIDATION_FAILED`, `ALREADY_REGISTERED`, `SAVE_FAILED`, `SYSTEM ERROR`
-- **Verify**: `VALIDATION_FAILED`, `NOT_REGISTERED`, `SYSTEM ERROR`
-- **Search**: `VALIDATION_FAILED`, `NO_FACE_FOUND`, `SYSTEM ERROR`
-
-### Response Format thực tế
-
-#### ✅ Success Response
-
-```json
-{
-  "success": true,
-  "result": {
-    "code": "OK",
-    "message": true
-  }
-}
-```
-
-#### ❌ Error Response
-
-```json
-{
-  "success": false,
-  "error": {
-    "code": "ERROR_CODE",
-    "message": "Error description"
-  }
-}
-```
-
-**Lưu ý**: Tất cả responses đều trả về HTTP status 200, lỗi được xử lý trong JSON response.
-
----
 
 ## 🛠️ Công nghệ sử dụng
 
@@ -569,8 +264,8 @@ Tìm kiếm người dùng bằng ảnh khuôn mặt sử dụng vector database
 | Component            | Technology         | Purpose                |
 | -------------------- | ------------------ | ---------------------- |
 | **Backend**          | Flask + Gunicorn   | API Server             |
-| **Database**         | MySQL 5.7+         | Data Storage           |
-| **Cache**            | Redis 6.0+         | Session & Temp Storage |
+| **Database**         | MySQL 8.0+         | Data Storage           |
+| **Cache**            | Redis 7.0+         | Session & Temp Storage |
 | **Image Processing** | OpenCV + NumPy     | Image Manipulation     |
 | **AI Framework**     | TensorFlow + Keras | Model Inference        |
 
@@ -583,140 +278,6 @@ Tìm kiếm người dùng bằng ảnh khuôn mặt sử dụng vector database
 | **Resolution** | Min 224x224px             | Model input requirement  |
 | **Quality**    | High contrast, clear face | Avoid blurry/dark images |
 | **Face Ratio** | 30-70% of image           | Face should be prominent |
-
----
-
-## 💡 Ví dụ sử dụng
-
-### 🔄 1. Quy trình đăng ký hoàn chỉnh
-
-#### Bước 1: Process ảnh
-
-```bash
-curl -X POST http://localhost:5000/face/api \
-  -H "Content-Type: application/json" \
-  -d '{
-    "_operation": "deepface",
-    "mode": "process",
-    "user_id": "user123",
-    "image": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ..."
-  }'
-```
-
-**Response:**
-
-```json
-{
-  "success": true,
-  "result": {
-    "code": "OK",
-    "message": true
-  }
-}
-```
-
-#### Bước 2: Register user
-
-```bash
-curl -X POST http://localhost:5000/face/api \
-  -H "Content-Type: application/json" \
-  -d '{
-    "_operation": "deepface",
-    "mode": "register",
-    "user_id": "user123"
-  }'
-```
-
-**Response:**
-
-```json
-{
-  "success": true,
-  "result": {
-    "code": "OK",
-    "message": true
-  }
-}
-```
-
-### ✅ 2. Xác thực khuôn mặt
-
-```bash
-curl -X POST http://localhost:5000/face/api \
-  -H "Content-Type: application/json" \
-  -d '{
-    "_operation": "deepface",
-    "mode": "verify",
-    "user_id": "user123",
-    "image": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ..."
-  }'
-```
-
-**Response:**
-
-```json
-{
-  "success": true,
-  "result": {
-    "code": "OK",
-    "message": true
-  }
-}
-```
-
-### 🐍 3. Python SDK Example
-
-```python
-import requests
-import base64
-
-class DeepFaceAPI:
-    def __init__(self, base_url="http://localhost:5000"):
-        self.base_url = base_url
-
-    def process_image(self, user_id, image_path):
-        with open(image_path, "rb") as f:
-            image_data = base64.b64encode(f.read()).decode()
-
-        response = requests.post(f"{self.base_url}/face/api", json={
-            "_operation": "deepface",
-            "mode": "process",
-            "user_id": user_id,
-            "image": f"data:image/jpeg;base64,{image_data}"
-        })
-        return response.json()
-
-    def register_user(self, user_id):
-        response = requests.post(f"{self.base_url}/face/api", json={
-            "_operation": "deepface",
-            "mode": "register",
-            "user_id": user_id
-        })
-        return response.json()
-
-    def verify_user(self, user_id, image_path):
-        with open(image_path, "rb") as f:
-            image_data = base64.b64encode(f.read()).decode()
-
-        response = requests.post(f"{self.base_url}/face/api", json={
-            "_operation": "deepface",
-            "mode": "verify",
-            "user_id": user_id,
-            "image": f"data:image/jpeg;base64,{image_data}"
-        })
-        return response.json()
-
-# Usage
-api = DeepFaceAPI()
-
-# Complete registration flow
-result1 = api.process_image("user123", "face.jpg")
-result2 = api.register_user("user123")
-
-# Verification
-result3 = api.verify_user("user123", "new_face.jpg")
-print(f"Verification result: {result3['result']['message']}")
-```
 
 ---
 
@@ -740,25 +301,6 @@ print(f"Verification result: {result3['result']['message']}")
 - **Model optimization**: Sử dụng GPU nếu có
 - **Concurrent requests**: Hỗ trợ nhiều request đồng thời
 
-### 📊 Monitoring
-
-- **Logs**: Kiểm tra logs trong `logs/` folder
-- **Health check**: `GET /health` endpoint
-- **Metrics**: Monitor CPU, RAM, và GPU usage
-
----
-
-## 🚀 Production Deployment
-
-### 📋 Checklist trước khi deploy
-
-- [ ] Cấu hình database connection
-- [ ] Cấu hình Redis connection
-- [ ] Kiểm tra model files tồn tại
-- [ ] Test tất cả endpoints
-- [ ] Cấu hình SSL/TLS
-- [ ] Setup monitoring và logging
-
 ### 🔧 Environment Variables
 
 ```bash
@@ -777,29 +319,6 @@ REDIS_DB=0
 FLASK_ENV=production
 FLASK_DEBUG=False
 ```
-
-### 🐳 Docker Deployment
-
-```dockerfile
-FROM python:3.10-slim
-
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-
-COPY . .
-EXPOSE 5000
-
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "4", "app:app"]
-```
-
----
-
-## 📞 Support & Contact
-
-- **GitHub**: [https://github.com/NguyenThong251/deepface](https://github.com/NguyenThong251/deepface)
-- **Issues**: Tạo issue trên GitHub
-- **Documentation**: Xem thêm trong `docs/` folder
 
 ---
 
