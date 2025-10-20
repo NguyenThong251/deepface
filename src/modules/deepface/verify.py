@@ -27,8 +27,7 @@ class VerifyController:
                         'message':"Face not registered"}}
 
             image1 = decode_base64_image(image_frame)
-            # faces1 = self.face_detect_service.detect_face(image1, anti_spoof_service=True)
-            faces1 = self.face_detect_service.detect_face(image1)
+            faces1 = self.face_detect_service.detect_face(image1, anti_spoof_service=True)
             if isinstance(faces1, dict) and faces1.get('success') is False:
                 return faces1
             face1 = faces1[0]
