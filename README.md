@@ -1,51 +1,53 @@
 # DeepFace API Documentation
 
-## 📋 Tổng quan
+References: https://github.com/serengil/deepface
 
-DeepFace API là một hệ thống nhận dạng khuôn mặt thông minh sử dụng công nghệ AI tiên tiến, cung cấp các chức năng:
+## 📋 Overview
 
-- **🔍 Process**: Xử lý và lưu trữ tạm thời ảnh khuôn mặt với kiểm tra anti-spoofing
-- **📝 Register**: Đăng ký khuôn mặt người dùng vào hệ thống database
-- **✅ Verify**: Xác thực khuôn mặt người dùng với độ chính xác cao
+DeepFace API is an intelligent facial recognition system using advanced AI technology, providing the following features:
 
-### ✨ Tính năng nổi bật
+- **🔍 Process**: Process and temporarily store face images with anti-spoofing checks
+- **📝 Register**: Register user faces into the database system
+- **✅ Verify**: Authenticate user faces with high accuracy
 
-- **Anti-Spoofing**: Phát hiện và ngăn chặn ảnh giả, video giả
-- **High Accuracy**: Sử dụng GhostFaceNet với độ chính xác cao
-- **Real-time Processing**: Xử lý nhanh với Redis caching
-- **Scalable**: Hỗ trợ nhiều người dùng đồng thời
+### ✨ Key Features
 
-## 🚀 Cài đặt và Triển khai
+- **Anti-Spoofing**: Detect and prevent fake images and videos
+- **High Accuracy**: Uses GhostFaceNet with high precision
+- **Real-time Processing**: Fast processing with Redis caching
+- **Scalable**: Supports multiple concurrent users
 
-### 📋 Yêu cầu hệ thống
+## 🚀 Installation and Deployment
 
-| Component   | Version | Mô tả                      |
+### 📋 System Requirements
+
+| Component   | Version | Description                |
 | ----------- | ------- | -------------------------- |
 | **Python**  | 3.10 +  | Runtime environment        |
-| **MySQL**   | 5.7+    | Database chính             |
-| **Redis**   | 6.0+    | Cache và session storage   |
-| **RAM**     | 4GB+    | Khuyến nghị cho production |
-| **Storage** | 10GB+   | Cho models và data         |
+| **MySQL**   | 8.0+    | Main database              |
+| **Redis**   | 7.0+    | Cache and session storage  |
+| **RAM**     | 4GB+    | Recommended for production |
+| **Storage** | 10GB+   | For models and data        |
 
-### 🔧 Cài đặt Dependencies
+### 🔧 Install Dependencies
 
 ```bash
 # Clone repository
 git clone https://github.com/NguyenThong251/deepface.git
 cd deepface
 
-# Tạo virtual environment
+# Create virtual environment
 python -m venv venv
 source venv/bin/activate  # Linux/Mac
-# hoặc
+# or
 venv\Scripts\activate     # Windows
 
-# Cài đặt dependencies
+# Install dependencies
 pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### ⚙️ Cấu hình
+### ⚙️ Configuration
 
 #### 1. Database Configuration (`src/config/sql.py`)
 
@@ -70,7 +72,7 @@ redis_config = {
 }
 ```
 
-#### 3. Tạo Database Schema
+#### 3. Create Database Schema
 
 ```sql
 CREATE DATABASE deepface_db;
@@ -84,7 +86,7 @@ CREATE TABLE face (
 );
 ```
 
-### 🏃‍♂️ Chạy ứng dụng
+### 🏃‍♂️ Run Application
 
 #### Development Mode
 
@@ -108,14 +110,14 @@ POST /face/api
 
 ### 📝 Request Format
 
-Tất cả requests đều sử dụng JSON format với cấu trúc chuẩn:
+All requests use JSON format with standard structure:
 
 ```json
 {
-  "_operation": "deepface", // Module name (bắt buộc)
-  "mode": "process|register|verify", // Function type (bắt buộc)
-  "user_id": "string", // User identifier (bắt buộc)
-  "image": "base64_string" // Base64 image (cho process/verify)
+  "_operation": "deepface", // Module name (required)
+  "mode": "process|register|verify|search", // Function type (required)
+  "user_id": "string", // User identifier (required for process/register/verify)
+  "image": "base64_string" // Base64 image (required for process/verify/search)
 }
 ```
 
@@ -149,9 +151,9 @@ Tất cả requests đều sử dụng JSON format với cấu trúc chuẩn:
 
 ## 🔍 1. Process Endpoint
 
-### 📋 Mô tả
+### 📋 Description
 
-Xử lý ảnh khuôn mặt với kiểm tra anti-spoofing và lưu trữ tạm thời trong Redis cache.
+Process face images with anti-spoofing checks and temporarily store in Redis cache.
 
 **Endpoint**: `POST /face/api`  
 **Mode**: `process`
@@ -167,7 +169,7 @@ Xử lý ảnh khuôn mặt với kiểm tra anti-spoofing và lưu trữ tạm 
 }
 ```
 
-### 🔄 Workflow chi tiết
+### 🔄 Detailed Workflow
 
 #### 1️⃣ **Validation Phase**
 
@@ -182,9 +184,9 @@ graph TD
 
 ## 📝 2. Register Endpoint
 
-### 📋 Mô tả
+### 📋 Description
 
-Đăng ký khuôn mặt người dùng vào database từ ảnh đã được xử lý và lưu trong Redis cache.
+Register user face into database from processed image stored in Redis cache.
 
 **Endpoint**: `POST /face/api`  
 **Mode**: `register`
@@ -201,9 +203,9 @@ graph TD
 
 ## ✅ 3. Verify Endpoint
 
-### 📋 Mô tả
+### 📋 Description
 
-Xác thực khuôn mặt người dùng bằng cách so sánh với ảnh đã đăng ký trong database.
+Authenticate user face by comparing with registered face in database.
 
 **Endpoint**: `POST /face/api`  
 **Mode**: `verify`
@@ -221,9 +223,9 @@ Xác thực khuôn mặt người dùng bằng cách so sánh với ảnh đã �
 
 ## 🔍 4. Search Endpoint
 
-### 📋 Mô tả
+### 📋 Description
 
-Tìm kiếm người dùng bằng ảnh khuôn mặt sử dụng vector database (Qdrant). comming soon
+Search for users by face image using vector database (Qdrant). Coming soon
 
 **Endpoint**: `POST /face/api`  
 **Mode**: `search`
@@ -238,22 +240,22 @@ Tìm kiếm người dùng bằng ảnh khuôn mặt sử dụng vector database
 }
 ```
 
-## 🚨 Error Codes Reference (đúng theo code thực tế)
+## 🚨 Error Codes Reference (Based on Actual Code)
 
-| Code                 | Áp dụng cho             | Mô tả                                   |
-| -------------------- | ----------------------- | --------------------------------------- |
-| `VALIDATION_FAILED`  | Process/Register/Verify | Thiếu tham số bắt buộc                  |
-| `ALREADY_REGISTERED` | Process/Register        | User đã đăng ký                         |
-| `NOT_REGISTERED`     | Verify                  | User chưa đăng ký                       |
-| `SAVE_FAILED`        | Process/Register        | Lưu ảnh tạm vào Redis hoặc SQL thất bại |
-| `NO_FACE_FOUND`      | Search                  | Không tìm thấy khuôn mặt trong database |
-| `SYSTEM ERROR`       | Tất cả                  | Lỗi hệ thống chung                      |
+| Code                 | Applies to              | Description                    |
+| -------------------- | ----------------------- | ------------------------------ |
+| `VALIDATION_FAILED`  | Process/Register/Verify | Missing required parameters    |
+| `ALREADY_REGISTERED` | Process/Register        | User already registered        |
+| `NOT_REGISTERED`     | Verify                  | User not registered            |
+| `SAVE_FAILED`        | Process/Register        | Failed to save to Redis or SQL |
+| `NO_FACE_FOUND`      | Search                  | No face found in database      |
+| `SYSTEM ERROR`       | All                     | General system error           |
 
-## 🛠️ Công nghệ sử dụng
+## 🛠️ Technology Stack
 
 ### 🤖 AI Models
 
-| Model            | Version | Mục đích           | Accuracy |
+| Model            | Version | Purpose            | Accuracy |
 | ---------------- | ------- | ------------------ | -------- |
 | **YOLO**         | v12n    | Face Detection     | 99.2%    |
 | **FasNet**       | Latest  | Anti-Spoofing      | 98.5%    |
@@ -269,7 +271,7 @@ Tìm kiếm người dùng bằng ảnh khuôn mặt sử dụng vector database
 | **Image Processing** | OpenCV + NumPy     | Image Manipulation     |
 | **AI Framework**     | TensorFlow + Keras | Model Inference        |
 
-### 📸 Yêu cầu ảnh
+### 📸 Image Requirements
 
 | Parameter      | Requirement               | Notes                    |
 | -------------- | ------------------------- | ------------------------ |
@@ -281,25 +283,25 @@ Tìm kiếm người dùng bằng ảnh khuôn mặt sử dụng vector database
 
 ---
 
-## ⚠️ Lưu ý quan trọng
+## ⚠️ Important Notes
 
-### 🔄 Quy trình bắt buộc
+### 🔄 Required Process Flow
 
-1. **Thứ tự thực hiện**: `Process` → `Register` → `Verify`
-2. **Thời gian cache**: Ảnh tạm thời trong Redis có TTL 600 giây (10 phút)
-3. **Session timeout**: Phải register trong vòng 10 phút sau khi process
+1. **Execution order**: `Process` → `Register` → `Verify`
+2. **Cache time**: Temporary images in Redis have TTL 600 seconds (10 minutes)
+3. **Session timeout**: Must register within 10 minutes after process
 
-### 🛡️ Bảo mật
+### 🛡️ Security
 
-- **Anti-spoofing**: Tất cả ảnh đều được kiểm tra chống giả mạo
-- **Authentication**: Có thể bật bằng cách uncomment `@require_auth`
-- **Data encryption**: Ảnh được mã hóa trong database
+- **Anti-spoofing**: All images are checked for anti-spoofing
+- **Authentication**: Can be enabled by uncommenting `@require_auth`
+- **Data encryption**: Images are encrypted in database
 
 ### ⚡ Performance
 
-- **Redis caching**: Tối ưu tốc độ xử lý
-- **Model optimization**: Sử dụng GPU nếu có
-- **Concurrent requests**: Hỗ trợ nhiều request đồng thời
+- **Redis caching**: Optimizes processing speed
+- **Model optimization**: Uses GPU if available
+- **Concurrent requests**: Supports multiple simultaneous requests
 
 ### 🔧 Environment Variables
 
@@ -326,8 +328,8 @@ FLASK_DEBUG=False
 
 ### 📋 Prerequisites
 
-1. **Python Manager**: Cài đặt Python 3.10 < version < 3.12
-2. **Database**: Cài đặt MySQL và Redis
+1. **Python Manager**: Install Python 3.10 < version < 3.12
+2. **Database**: Install MySQL and Redis
 3. **Web Server**: Setup Nginx/Apache/OpenLiteSpeed/Caddy
 4. **Git**: Clone repository
 
@@ -344,13 +346,13 @@ cd deepface
 #### 2️⃣ **Database Setup**
 
 ```sql
--- Tạo database
+-- Create database
 CREATE DATABASE deepface_db;
 CREATE USER 'deepface_user'@'localhost' IDENTIFIED BY 'your_password';
 GRANT ALL PRIVILEGES ON deepface_db.* TO 'deepface_user'@'localhost';
 FLUSH PRIVILEGES;
 
--- Tạo bảng
+-- Create table
 USE deepface_db;
 CREATE TABLE face (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -375,7 +377,7 @@ CREATE TABLE face (
 #### 4️⃣ **Dependencies Installation**
 
 ```bash
-# 1. Upgrade pip và tools
+# 1. Upgrade pip and tools
 sudo ./_venv/bin/python3 -m pip install --upgrade pip setuptools wheel
 
 # 2. Install dependencies
