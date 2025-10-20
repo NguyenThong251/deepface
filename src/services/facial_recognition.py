@@ -94,6 +94,8 @@ class FacialRecognitionService:
         
         # Verify: distance <= threshold means same person
         verified = distance <= threshold
+
+        print(f"Distance: {distance}, Threshold: {threshold}")
         
         return bool(verified)
 
