@@ -17,7 +17,7 @@ def register_routes(app):
         # "register": EKYCRegisterController().register_user,
     }
 
-    ops = {"deepface": deepface, "ekyc": ekyc}
+    ops = {"Deepface": deepface, "ekyc": ekyc}
 
     def body():
         return request.get_json(force=True, silent=True) or {}
@@ -28,7 +28,7 @@ def register_routes(app):
     def face_api():
         data = body()
         op   = data.get("_operation")
-        mode = data.get("mode")
+        mode = data.get("challenge")
         if not op or not mode or mode not in ops[op]:
             return {'success': False,"error": {'code':"VALIDATION_FAILED",
                 'message': "Operation not found" if not op else "Mode not found"}}

@@ -12,8 +12,8 @@ class VerifyController:
         self.sql_service = SQLService()
     def verify_user(self, data: Dict[str, Any]):
         try:
-            user_id = data.get("user_id")
-            image_frame = data.get("image")
+            user_id = data.get("userId")
+            image_frame = data.get("frame")
 
             if not all((user_id, image_frame)): 
                 return {'success': False,"error": {

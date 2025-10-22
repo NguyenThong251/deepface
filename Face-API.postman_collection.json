@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"_operation\":\"deepface\", // deepface, ekyc,...\r\n    \"mode\":\"\", //   controller(process,verify,register,search) in module(deepaface,ekyc,...)\r\n    \"user_id\": \"\",    // id user\r\n    \"image\": \"\"   //base64 ( shape:full device, 80KB < size < 100KB\r\n}",
+					"raw": "{\r\n    \"_operation\":\"Deepface\", // Deepface, Ekyc,...\r\n    \"challenge\":\"process\", //   controller(verify,register,process) in module(Deepaface,Ekyc,...)\r\n    \"userId\": \"\",  // user id\r\n    \"image\": \"\"   //base64 ( shape:full device, 80KB < size < 100KB\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -44,7 +44,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"_operation\":\"deepface\", // deepface, ekyc,...\r\n    \"mode\":\"process\", //   controller(process,verify,register,search) in module(deepaface,ekyc,...)\r\n    \"user_id\": \"\",    // id user\r\n    \"image\": \"\"   //base64 ( shape:full device, 80KB < size < 100KB\r\n}",
+							"raw": "{\r\n    \"_operation\":\"Deepface\",\r\n    \"challenge\":\"process\", \r\n    \"userId\": \"\",  \r\n    \"image\": \"\"  \r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -52,25 +52,28 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:5005/face/api",
-							"protocol": "http",
+							"raw": "https:/face.hoangthong.io.vn/face/api",
 							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
+								"https"
 							],
-							"port": "5005",
+							"port": "",
 							"path": [
+								"face.hoangthong.io.vn",
 								"face",
 								"api"
 							]
 						}
 					},
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": null
+					"_postman_previewlanguage": "",
+					"header": [],
+					"cookie": [
+						{
+							"expires": "Invalid Date",
+							"domain": "",
+							"path": ""
+						}
+					],
+					"body": ""
 				},
 				{
 					"name": "verify",
@@ -79,7 +82,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"_operation\":\"deepface\", // deepface, ekyc,...\r\n    \"mode\":\"verify\", //   controller(process,verify,register,search) in module(deepaface,ekyc,...)\r\n    \"user_id\": \"\",    // id user\r\n    \"image\": \"\"   //base64 ( shape:full device, 80KB < size < 100KB\r\n}",
+							"raw": "{\r\n    \"_operation\":\"Deepface\", \r\n    \"challenge\":\"verify\", \r\n    \"userId\": \"\",  \r\n    \"image\": \"\" \r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -87,15 +90,14 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:5005/face/api",
-							"protocol": "http",
+							"raw": "https://face.hoangthong.io.vn/face/api",
+							"protocol": "https",
 							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
+								"face",
+								"hoangthong",
+								"io",
+								"vn"
 							],
-							"port": "5005",
 							"path": [
 								"face",
 								"api"
@@ -114,7 +116,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"_operation\":\"deepface\", // deepface, ekyc,...\r\n    \"mode\":\"register\", //   controller(process,verify,register,search) in module(deepaface,ekyc,...)\r\n    \"user_id\": \"\"    // id user\r\n}",
+							"raw": "{\r\n    \"_operation\":\"Deepface\", \r\n    \"challenge\":\"register\", \r\n    \"userId\": \"\"  \r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -122,16 +124,13 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:5005/face/api",
-							"protocol": "http",
+							"raw": "https:/face.hoangthong.io.vn/face/api",
 							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
+								"https"
 							],
-							"port": "5005",
+							"port": "",
 							"path": [
+								"face.hoangthong.io.vn",
 								"face",
 								"api"
 							]

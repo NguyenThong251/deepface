@@ -11,7 +11,7 @@ class RegisterController:
     
     def register_user(self, data: Dict[str, Any]):
         try:
-            user_id = data.get("user_id")
+            user_id = data.get("userId")
             if not user_id: return {'success': False,"error": {'code':"VALIDATION_FAILED",
                 'message':"User required"}}
 
@@ -20,7 +20,7 @@ class RegisterController:
                 'message':"User has registered face"}}
 
             image_face = self.redis_service.get_temp_image(user_id)
-            if image_face is None: return {'success': False,"error": {'code':"VALIDATION_FAILED",
+            if image_face is None: return {'success': False,"error": {'code':"NO_TEMP_IMAGES",
                 'message':"Image not found"}}
 
             res_sql = self.sql_service.create_face_info(user_id , image_face)

@@ -89,6 +89,7 @@ class FacialRecognitionService:
         # Calculate distance using proper cosine distance (1 - cosine_similarity)
         distance = self.find_cosine_distance(embedding1, embedding2)
         
+        print(distance)
         # Get proper threshold for GhostFaceNet
         threshold = self.find_threshold(self.model_name, self.distance_metric)
         

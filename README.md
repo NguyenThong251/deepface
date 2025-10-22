@@ -112,40 +112,14 @@ POST /face/api
 
 All requests use JSON format with standard structure:
 
-```json
+````json
 {
-  "_operation": "deepface", // Module name (required)
-  "mode": "process|register|verify|search", // Function type (required)
-  "user_id": "string", // User identifier (required for process/register/verify)
-  "image": "base64_string" // Base64 image (required for process/verify/search)
+  "_operation": "Deepface", // Module name (required)
+  "challenge": "process|register|verify|search", // Function type (required)
+  "userId": "string", // User identifier (required for process/register/verify)
+  "frame": "base64_string" // Base64 frame (required for process/verify/search)
 }
-```
 
-### 📊 Response Format
-
-#### ✅ Success Response
-
-```json
-{
-  "success": true,
-  "result": {
-    "code": "OK",
-    "message": true
-  }
-}
-```
-
-#### ❌ Error Response
-
-```json
-{
-  "success": false,
-  "error": {
-    "code": "ERROR_CODE",
-    "message": "Error description"
-  }
-}
-```
 
 ---
 
@@ -155,19 +129,19 @@ All requests use JSON format with standard structure:
 
 Process face images with anti-spoofing checks and temporarily store in Redis cache.
 
-**Endpoint**: `POST /face/api`  
-**Mode**: `process`
+**Endpoint**: `POST /face/api`
+**Challenge**: `process`
 
 ### 📤 Request
 
 ```json
 {
-  "_operation": "deepface",
-  "mode": "process",
-  "user_id": "user123",
-  "image": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ..."
+  "_operation": "Deepface",
+  "challenge": "process",
+  "userId": "user123",
+  "frame": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ..."
 }
-```
+````
 
 ### 🔄 Detailed Workflow
 
@@ -195,9 +169,9 @@ Register user face into database from processed image stored in Redis cache.
 
 ```json
 {
-  "_operation": "deepface",
-  "mode": "register",
-  "user_id": "user123"
+  "_operation": "Deepface",
+  "challenge": "register",
+  "userId": "user123"
 }
 ```
 
@@ -214,10 +188,10 @@ Authenticate user face by comparing with registered face in database.
 
 ```json
 {
-  "_operation": "deepface",
-  "mode": "verify",
-  "user_id": "user123",
-  "image": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ..."
+  "_operation": "Deepface",
+  "challenge": "verify",
+  "userId": "user123",
+  "frame": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ..."
 }
 ```
 
@@ -234,9 +208,9 @@ Search for users by face image using vector database (Qdrant). Coming soon
 
 ```json
 {
-  "_operation": "deepface",
-  "mode": "search",
-  "image": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ..."
+  "_operation": "Deepface",
+  "challenge": "search",
+  "frame": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ..."
 }
 ```
 

@@ -14,7 +14,7 @@ class SearchController:
 
     def search_user(self, data: Dict[str, Any]):
         try:
-            image_frame = data.get("image")
+            image_frame = data.get("frame")
             if not image_frame: return {'success': False,"error": {'message':"VALIDATION FAILED"}}
 
             image = decode_base64_image(image_frame)
