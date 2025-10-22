@@ -31,7 +31,7 @@ def register_routes(app):
         mode = data.get("challenge")
         if not op or not mode or mode not in ops[op]:
             return {'success': False,"error": {'code':"VALIDATION_FAILED",
-                'message': "Operation not found" if not op else "Mode not found"}}
+                'message': "Operation not found" if not op else "Challenge not found"}}
         try:
             return ops[op][mode](data)
         except Exception as e:
