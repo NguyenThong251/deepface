@@ -47,4 +47,22 @@ class SQLService:
                 connection.close()
             except Exception:
                 pass
-    
+
+    def delete_face_info(self, user_id) -> bool:
+        try:
+            connection = self.get_connection()
+            cursor = connection.cursor()
+            cursor.execute("DELETE FROM face WHERE user_id=%s", (user_id,))
+            connection.commit()
+            return True
+        except Exception as e:
+            return False
+        finally:
+            try:
+                cursor.close()
+            except Exception:
+                pass
+            try:
+                connection.close()
+            except Exception:
+                pass

@@ -53,7 +53,7 @@ class FacialRecognitionService:
         
         return threshold
     
-    def verify(self, img1_path: Union[str, np.ndarray], img2_path: Union[str, np.ndarray]):
+    def verify(self, img1_path: Union[str, np.ndarray], img2_path: Union[str, np.ndarray], device: str = "ios"):
         # Handle numpy arrays directly
         if isinstance(img1_path, np.ndarray):
             img1 = img1_path
@@ -94,7 +94,7 @@ class FacialRecognitionService:
         threshold = self.find_threshold(self.model_name, self.distance_metric)
         
         # Verify: distance <= threshold means same person
-        verified = distance <= threshold
+        verified = distance <=  threshold if device != "android" else distance <= 0.36
         
         return bool(verified)
 
