@@ -5,6 +5,7 @@ from src.modules.deepface.process import ProcessController
 from src.modules.deepface.search import SearchController
 from src.modules.deepface.userexist import UserExistController
 from src.routes.middleware import require_auth
+from src.modules.deepface.mask import MaskController
 
 def register_routes(app):
     deepface = {
