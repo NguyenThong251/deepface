@@ -43,4 +43,4 @@ class ProcessController:
                     'result': {'code': 'OK','message': True}} 
 
         except Exception as e:
-            return {'success': False,"error": {'message': {str(e)}}}
+            return {'success': False,"error": {'message': str(e)}}
