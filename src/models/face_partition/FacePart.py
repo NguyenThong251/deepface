@@ -23,8 +23,14 @@ class FacePartition:
             cls_id = int(cls_tensor)
             label = self.model.names[cls_id].lower()
             labels.append(label)
-        if "mouth" not in labels or "eye" not in labels:
-            return True
-        else:
+
+        nose_count = labels.count("nose")
+        mouth_count = labels.count("mouth")
+        eye_count = labels.count("eye")
+        eyebrow_count = labels.count("eyebrow")
+        
+        if nose_count >= 1 and mouth_count >= 1 and eye_count >= 2 and eyebrow_count >= 2:
             return False
+        else:
+            return True
 
