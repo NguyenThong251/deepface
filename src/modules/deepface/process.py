@@ -1,5 +1,7 @@
-from typing import Any, Dict
+import cv2
+import os
 
+from typing import Any, Dict
 from src.services.detect_face import DetectFaceService
 from src.services.redis import RedisService
 from src.services.sql import SQLService
@@ -30,8 +32,30 @@ class ProcessController:
             image = decode_base64_image(image_frame)
 
             res_detect = self.face_detect_service.detect_face(image, anti_spoof_service=True)
-            if isinstance(res_detect, dict) and res_detect.get('success') is False:
+            if isinstance(res_detect, dict) and res_detect.get('success') is False:    
                 return res_detect
+            
+            face = res_detect[0]
+            x, y, w, h = int(face.x), int(face.y), int(face.w), int(face.h)
+            face_crop = image[y:y+h, x:x+w]
+            # ==== DEBUG: LƯU ẢNH RA FOLDER "result" ====
+            out_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "result")
+            os.makedirs(out_dir, exist_ok=True)
+
+            # 1) Ảnh mặt đã crop
+            crop_path = os.path.join(out_dir, f"face_crop_{user_id}.jpg")
+            cv2.imwrite(crop_path, face_crop)
+
+            # 2) Ảnh gốc có vẽ khung
+            image_draw = image.copy()
+            cv2.rectangle(image_draw, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            bbox_path = os.path.join(out_dir, f"face_bbox_{user_id}.jpg")
+            cv2.imwrite(bbox_path, image_draw)
+
+            # ==== HẾT PHẦN DEBUG ====
+            res_occlusion = self.face_detect_service.detect_face_occlusion(face_crop)
+            if isinstance(res_occlusion, dict) and res_occlusion.get('success') is False:
+                return res_occlusion
 
             res_redis = self.redis_service.create_temp_image(user_id, image_frame)
             if not res_redis: 
