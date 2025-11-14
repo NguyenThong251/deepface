@@ -1,6 +1,7 @@
 # DeepFace API Documentation
 
 References: https://github.com/serengil/deepface
+dowload model from: https://drive.google.com/drive/folders/1e71cwT6B3cJW0L8Yb9DxFsEnehSyHb0y?usp=sharing
 
 ## 📋 Overview
 
