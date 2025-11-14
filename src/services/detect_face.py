@@ -18,7 +18,7 @@ class DetectFaceService:
 
     def detect_face(self, img: np.ndarray, face_occlusion_service: bool = True, face_detect_service: bool = True,  anti_spoof_service: bool = False, mask_detect_service: bool = False, face_partition_service: bool = False) -> Optional[list | dict]:
         h, w = img.shape[:2]
-        if anti_spoof_service is False:
+        if anti_spoof_service is True:
             img_is_real, img_score = self.spoof.analyze(img, (0, 0, w, h))
             if img_score <= self.threshold or not img_is_real:
                 return {'success': False,"error": {'message':"ANTI_SPOOFING"}}
@@ -42,6 +42,6 @@ class DetectFaceService:
     def detect_face_occlusion(self, img: np.ndarray) -> bool:
         face_occlusion = self.face_occlusion.detect_face_occlusion(img)
         if face_occlusion:
-            return {'success': False,"error": {'message':"FACE_OCCLUSION"}}
+            return {'success': False,"error": {'message':"MASK_DETECTED"}}
         return True
         
