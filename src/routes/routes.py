@@ -5,7 +5,6 @@ from src.modules.deepface.process import ProcessController
 from src.modules.deepface.search import SearchController
 from src.modules.deepface.userexist import UserExistController
 from src.routes.middleware import require_auth
-from src.modules.deepface.mask import MaskController
 
 def register_routes(app):
     deepface = {
@@ -13,7 +12,7 @@ def register_routes(app):
         "delete": UserExistController().delete_face_info,
         "verify":  VerifyController().verify_user,
         "register": RegisterController().register_user,
-        "process": ProcessController().process_image,
+        "liveness": ProcessController().process_image,
         "search": SearchController().search_user,
     }
     ekyc = {

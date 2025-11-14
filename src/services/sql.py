@@ -1,5 +1,6 @@
-
+from datetime import datetime
 import io, numpy as np
+
 from mysql.connector import pooling
 from src.config.sql import db_config
 
@@ -14,7 +15,7 @@ class SQLService:
         try:
             connection = self.get_connection()
             cursor = connection.cursor()
-            cursor.execute("SELECT image_face FROM face WHERE user_id=%s", (user_id,))
+            cursor.execute("SELECT images FROM vtiger_timekeeping_face WHERE owner = %s", (user_id,))
             row = cursor.fetchone()
             return row[0] if row else None
         except Exception as e:
@@ -33,8 +34,8 @@ class SQLService:
         try:
             connection = self.get_connection()
             cursor = connection.cursor()
-            cursor.execute("INSERT INTO face (user_id, image_face) VALUES (%s, %s)", (user_id, image_face))
-            connection.commit()
+            res_sql = cursor.execute("INSERT INTO vtiger_timekeeping_face (owner, images, created_at) VALUES (%s, %s, %s)", (user_id, image_face, datetime.now()))
+            res = connection.commit()
             return True
         except Exception as e:
             return False
@@ -52,7 +53,7 @@ class SQLService:
         try:
             connection = self.get_connection()
             cursor = connection.cursor()
-            cursor.execute("DELETE FROM face WHERE user_id=%s", (user_id,))
+            cursor.execute("DELETE FROM vtiger_timekeeping_face WHERE owner=%s", (user_id,))
             connection.commit()
             return True
         except Exception as e:

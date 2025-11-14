@@ -15,7 +15,6 @@ class VerifyController:
             user_id = data.get("userId")
             image_frame = data.get("frame")
             device = data.get("device")
-
             if not all((user_id, image_frame)): 
                 return {'success': False,"error": {
                     'code':"VALIDATION_FAILED",
@@ -29,13 +28,13 @@ class VerifyController:
 
             image1 = decode_base64_image(image_frame)
             faces1 = self.face_detect_service.detect_face(image1, anti_spoof_service=True)
-            # faces1 = self.face_detect_service.detect_face(image1)
             if isinstance(faces1, dict) and faces1.get('success') is False:
                 return faces1
             face1 = faces1[0]
             x1, y1, w1, h1 = int(face1.x), int(face1.y), int(face1.w), int(face1.h)
 
             image2 = decode_base64_image(image_face_info)
+            print('hello')
             faces2 = self.face_detect_service.detect_face(image2)
             face2 = faces2[0]
             x2, y2, w2, h2 = int(face2.x), int(face2.y), int(face2.w), int(face2.h)

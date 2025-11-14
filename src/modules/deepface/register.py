@@ -36,7 +36,7 @@ class RegisterController:
             return {'success': False,"error": {'message': str(e)}}
 
 
-# TEST QDRANT
+#  QDRANT
 
 # from typing import Any, Dict
 # import numpy as np
