@@ -4,8 +4,8 @@ from src.modules.deepface.register import RegisterController
 from src.modules.deepface.process import ProcessController
 from src.modules.deepface.search import SearchController
 from src.modules.deepface.userexist import UserExistController
-from src.modules.deepface.redis_face_info import RedisFaceInfoController
 from src.routes.middleware import require_auth
+
 def register_routes(app):
     deepface = {
         "userexist": UserExistController().user_exist,
@@ -14,8 +14,6 @@ def register_routes(app):
         "register": RegisterController().register_user,
         "liveness": ProcessController().process_image,
         "search": SearchController().search_user,
-        "redisFaceInfo": RedisFaceInfoController().redis_face_info,
-
     }
     ekyc = {
         # "verify": EKYCVerifyController().verify_user,

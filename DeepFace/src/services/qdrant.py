@@ -28,7 +28,6 @@ class QdrantService:
             collection_name=collection_name,
             points=[PointStruct(id=point_id, vector=vector, payload=payload)],
         )
-
     def delete_vector(self, collection_name: str, vector_id: str):
         self.client.delete(
             collection_name=collection_name,

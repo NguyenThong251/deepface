@@ -24,7 +24,6 @@ class UserExistController:
 
 
     def delete_face_info(self, user_id) -> bool:
-        #  delete redis
         try:
             user_id = data.get("userId")
             if not user_id: return {'success': False,"error": {'code':"VALIDATION_FAILED", 'message':"User required"}}
