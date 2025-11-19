@@ -1,4 +1,3 @@
-import io
 import redis
 import json
 import numpy as np
@@ -13,6 +12,7 @@ class RedisService:
 
     def __init__(self):
         self.client = redis.Redis(**redis_config)
+
 
     def delete_temp_embeddings(self, user_id: str):
         try:
@@ -62,6 +62,14 @@ class RedisService:
         except Exception as e:
             return None
 
+    def delete_embeddings(self, user_id: str):
+        try:
+            redis_key = f"{self.prefix_embeddings}{user_id}"
+            self.client.delete(redis_key)
+            return True
+        except Exception as e:
+            return False
+
     def save_bulk_embeddings(self, embeddings_map: Dict[str, np.ndarray]):
         try:
             result = {"saved": [], "failed": []}
@@ -76,7 +84,3 @@ class RedisService:
             return result
         except Exception:
             return {"saved": [], "failed": list(embeddings_map.keys())}
-
-
-
-

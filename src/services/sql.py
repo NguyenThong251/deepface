@@ -1,5 +1,5 @@
 from datetime import datetime
-import io, numpy as np
+import numpy as np
 import json
 
 from mysql.connector import pooling
@@ -12,7 +12,7 @@ class SQLService:
     def get_connection(self):
         return self.connection_pool.get_connection()
 
-    def get_face_info(self, user_id) -> None:
+    def get_face_info(self, user_id):
         try:
             connection = self.get_connection()
             cursor = connection.cursor()
@@ -65,8 +65,8 @@ class SQLService:
         try:
             connection = self.get_connection()
             cursor = connection.cursor()
-            res_sql = cursor.execute("INSERT INTO vtiger_timekeeping_face (owner, images, created_at) VALUES (%s, %s, %s)", (user_id, image_face, datetime.now()))
-            res = connection.commit()
+            cursor.execute("INSERT INTO vtiger_timekeeping_face (owner, images, created_at) VALUES (%s, %s, %s)", (user_id, image_face, datetime.now()))
+            connection.commit()
             return True
         except Exception as e:
             return False
