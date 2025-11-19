@@ -1,0 +1,237 @@
+{
+	"info": {
+		"_postman_id": "965270ad-3c98-4066-9a1a-65db2ca6e1b5",
+		"name": "Face-API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "47209401"
+	},
+	"item": [
+		{
+			"name": "deepface",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"_operation\":\"Deepface\", // Deepface, Ekyc,...\r\n    \"mode\":\"process\", //   controller(verify, register, liveness, delete, userexist, redisFaceInfo ) in module(Deepaface,Ekyc,...)\r\n    \"userId\": \"\",  // user id\r\n    \"frame\": \"\"   //base64 ( shape:full device, 80KB < size < 100KB\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/face/api",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"face",
+						"api"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "liveness",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"_operation\":\"Deepface\",\r\n    \"mode\":\"liveness\", \r\n    \"userId\": \"\",  \r\n    \"frame\": \"\"  \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/face/api",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"face",
+								"api"
+							]
+						}
+					},
+					"_postman_previewlanguage": "",
+					"header": [],
+					"cookie": [
+						{
+							"expires": "Invalid Date",
+							"domain": "",
+							"path": ""
+						}
+					],
+					"body": ""
+				},
+				{
+					"name": "verify",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"_operation\":\"Deepface\",\r\n    \"mode\":\"verify\", \r\n    \"userId\": \"\",  \r\n    \"frame\": \"\"  \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/face/api",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"face",
+								"api"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "register",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"_operation\":\"Deepface\",\r\n    \"mode\":\"register\", \r\n    \"userId\": \"\",  \r\n    \"frame\": \"\"  \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/face/api",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"face",
+								"api"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "delete",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"_operation\":\"Deepface\",\r\n    \"mode\":\"delete\",\r\n    \"userId\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/face/api",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"face",
+								"api"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "redisFaceInfo",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"_operation\":\"Deepface\", \r\n    \"mode\":\"redisFaceInfo\",\r\n    \"accesskey\" :\"DfJbIhGa5DScX5HL@redisfaceinfo\"\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/face/api",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"face",
+								"api"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "userexist",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"_operation\":\"Deepface\",\r\n    \"mode\":\"userexist\",\r\n    \"userId\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/face/api",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"face",
+								"api"
+							]
+						}
+					},
+					"_postman_previewlanguage": "",
+					"header": [],
+					"cookie": [
+						{
+							"expires": "Invalid Date",
+							"domain": "",
+							"path": ""
+						}
+					],
+					"body": ""
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "",
+			"type": "default"
+		}
+	]
+}

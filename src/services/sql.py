@@ -16,7 +16,7 @@ class SQLService:
         try:
             connection = self.get_connection()
             cursor = connection.cursor()
-            cursor.execute("SELECT images FROM vtiger_timekeeping_face WHERE owner = %s", (user_id,))
+            cursor.execute("SELECT image_face FROM vtiger_timekeeping_face WHERE owner = %s", (user_id,))
             row = cursor.fetchone()
             data = row[0] if row else None
             arr = np.array(json.loads(data), dtype=np.float32)
@@ -37,14 +37,14 @@ class SQLService:
         try:
             connection = self.get_connection()
             cursor = connection.cursor()
-            cursor.execute("SELECT owner, images FROM vtiger_timekeeping_face")
+            cursor.execute("SELECT owner, image_face FROM vtiger_timekeeping_face")
             rows = cursor.fetchall()
             result = {}
-            for owner, images in rows or []:
-                if images is None:
+            for owner, image_face in rows or []:
+                if image_face is None:
                     continue
                 try:
-                    arr = np.array(json.loads(images), dtype=np.float32)
+                    arr = np.array(json.loads(image_face), dtype=np.float32)
                     result[str(owner)] = arr
                 except Exception:
                     continue
@@ -65,7 +65,7 @@ class SQLService:
         try:
             connection = self.get_connection()
             cursor = connection.cursor()
-            cursor.execute("INSERT INTO vtiger_timekeeping_face (owner, images, created_at) VALUES (%s, %s, %s)", (user_id, image_face, datetime.now()))
+            cursor.execute("INSERT INTO vtiger_timekeeping_face (owner, image_face, created_at) VALUES (%s, %s, %s)", (user_id, image_face, datetime.now()))
             connection.commit()
             return True
         except Exception as e:
