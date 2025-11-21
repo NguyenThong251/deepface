@@ -5,6 +5,7 @@ from src.modules.ekyc.process import ProcessController
 from src.modules.ekyc.userexist import UserExistController
 from src.modules.ekyc.redis_face_info import RedisFaceInfoController
 from src.routes.middleware import require_auth
+from src.utils.permissions import is_user_admin
 
 erp_face_bp = Blueprint('erp_face', __name__)
 
@@ -26,7 +27,7 @@ def body():
 
 
 @erp_face_bp.route("/face/api", methods=["POST"])
-# @require_auth # authentication required
+@require_auth # authentication required
 def face_api():
     data = body()
     op   = data.get("_operation")

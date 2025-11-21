@@ -97,3 +97,14 @@ class RedisService:
         except Exception:
             return False
     #####
+
+
+    def get_module_info(self, user_role: str, module_name: str):
+        try:
+            redis_key = f"ERP:ModuleInfo:{user_role}"
+            data = self.client.hget(redis_key, module_name)
+            data = data.decode("utf-8")
+            return json.loads(data)
+        except Exception as e:
+            return None
+    #####
